@@ -1,0 +1,257 @@
+<link
+  href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.5/dist/quill.snow.css"
+  rel="stylesheet"
+/>
+
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.5/dist/quill.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<link
+  rel="stylesheet"
+  href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css"
+/>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<div class="modal" id="modal_ver_emissoes">
+  <div class="close_modal_father">
+    <i onclick="fecharModal()" class="fa-solid fa-xmark"></i>
+  </div>
+  <h2>Emissões <red>{Nome_Contrato}</red></h2>
+  <h3>Data Criação: <strong>04/04/2024</strong></h3>
+  <div class="input_father">
+    <label for="buscar_cliente_ou_contrato">Buscar Cliente :</label>
+    <input type="text" name="buscar_cliente_ou_contrato" id="buscar_cliente">
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <td>Nome Contrato</td>
+        <td>Nome Cliente</td>
+        <td>Data Emissão</td>
+        <td>Data Assinatura</td>
+        <td>Visualizar PDF</td>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</div>
+<form class="modal" id="modal_add_contrato">
+  <div class="close_modal_father">
+    <i onclick="fecharModal()" class="fa-solid fa-xmark"></i>
+  </div>
+  <div class="input_father">
+    <label for="nome_contrato_add_modal">Nome do Contrato:</label>
+    <input
+      type="text"
+      name="nome_contrato_add_modal"
+      placeholder="Digite o Nome do Contrato"
+      id="nome_contrato_add_modal"
+    />
+  </div>
+  
+  <div class="textarea_father">
+    <label for="">Varáveis do Contrato:</label>
+    <div class="variaveis_contrato_buttons">
+      <button type="button">{Nome do Cliente}</button>
+      <button type="button">{Documento Cliente}</button>
+      <button type="button">{Data Atual}</button>
+    </div>
+    <div id="toolbar">
+      <span class="ql-formats">
+        <select title="Fonte Usada" class="option_class ql-font"></select>
+        <select title="Tamanho Fonte" id="tamanho_fonte" class="option_class ql-size">
+          <option value="normal"selected>Padrão</option>
+          <option value="small">Pequena</option>
+          <option value="large">Grande</option>
+          <option value="huge">Enorme</option>
+        </select>
+      </span>
+      <span class="ql-formats">
+        <button title="Negrito" class="option_class ql-bold"></button>
+        <button title="Itálico" class="option_class ql-italic"></button>
+        <button title="Underline" class="option_class ql-underline"></button>
+        <button title="Riscado" class="option_class ql-strike"></button>
+      </span>
+      <span class="ql-formats">
+        <select title="Cor Texto" class="option_class ql-color"></select>
+        <select title="Cor Grifado" class="option_class ql-background"></select>
+      </span>
+      <span class="ql-formats">
+        <button
+          title="Sub Texto"
+          class="option_class ql-script"
+          value="sub"
+        ></button>
+        <button
+          title="Sob Texto"
+          class="option_class ql-script"
+          value="super"
+        ></button>
+      </span>
+      <span class="ql-formats">
+        <button
+          title="Título"
+          class="option_class ql-header"
+          value="1"
+        ></button>
+        <button
+          title="Subtítulo"
+          class="option_class ql-header"
+          value="2"
+        ></button>
+        <button
+          title="Bloco de Citação"
+          class="option_class ql-blockquote"
+        ></button>
+        <!-- <button  title="Bloco de Citação"  class="option_class ql-code-block"></button> -->
+      </span>
+      <span class="ql-formats">
+        <button
+          title="Lista Numerada"
+          class="option_class ql-list"
+          value="ordered"
+        ></button>
+        <button
+          title="Lista Não Numerada"
+          class="option_class ql-list"
+          value="bullet"
+        ></button>
+        <button
+          title="Remover Espaçamento"
+          class="option_class ql-indent"
+          value="-1"
+        ></button>
+        <button
+          title="Adicionar Espaçamento"
+          class="option_class ql-indent"
+          value="+1"
+        ></button>
+      </span>
+      <span class="ql-formats">
+        <button
+          title="Alterar Lado da Escrita"
+          class="option_class ql-direction"
+          value="rtl"
+        ></button>
+        <select title="Alinhar Texto" class="option_class ql-align"></select>
+      </span>
+      <span class="ql-formats">
+        <button title="Adicionar Link" class="option_class ql-link"></button>
+        <button title="Adicionar Imagem" class="option_class ql-image"></button>
+        <!-- <button title="Adicionar Link"class="option_class ql-video"></button> -->
+        <!-- <button class="option_class ql-formula"></button> -->
+      </span>
+      <span class="ql-formats">
+        <button
+          title="Limpar Modificações"
+          class="option_class ql-clean"
+        ></button>
+      </span>
+    </div>
+
+    <div id="editor"></div>
+    <div class="button_father">
+      <button>Salvar Contato</button>
+    </div>
+  </div>
+</form>
+<form class="modal" id="modal_realizar_emissao">
+  <input type="hidden" id="id_contrato_emissao">
+  <input type="hidden" id="id_cliente_emissao">
+
+  <div class="close_modal_father">
+    <i onclick="fecharModal()" class="fa-solid fa-xmark"></i>
+  </div>
+  <div class="form_body">
+    <div class="input_father">
+      <label for="nome__add_modal">Nome do Cliente:</label>
+      <input
+        type="text"
+        name="nome_cliente_add_modal"
+        placeholder="Digite o Nome do Cliente"
+        id="nome_cliente_add_modal"
+      />
+    </div>
+    <div class="button_father">
+      <button>Emitir</button>
+    </div>
+  </div>
+
+</form>
+
+<script>
+
+</script>
+<div class="header_options_page">
+  <div class="header_options_parent">
+    <h3>Métricas Clientes</h3>
+
+    <span>Total de Contratos Criados: <red><%=attributes.quantidade_contrato[0].quantidade%> Contrato(s)</red></span>
+  </div>
+  <div class="header_options_parent">
+    <label for="">Buscar Contrato:</label>
+
+    <div class="input_search_father">
+      <input
+        type="text"
+        name="buscar_contrato_processos"
+        id="buscar_contrato_processos"
+      />
+      <i class="fa-solid fa-magnifying-glass"></i>
+    </div>
+  </div>
+  <div class="header_options_parent">
+    <button onclick="abrirModal('modal_add_contrato');$('#modal_add_contrato').attr('editando','false')">
+      Adicionar Contrato
+    </button>
+  </div>
+</div>
+
+<div id="tooltip_contrato">
+  <span>Ações:</span>
+  <button id="editar_contrato">
+    <i class="fa-solid fa-pen"></i> Editar Contrato
+  </button>
+  <button id="excluir_contrato">
+    <i class="fa-solid fa-trash-can"></i> Excluir Contrato
+  </button>
+</div>
+<section id="cards_father_contrato">
+  <% function formatarData(target_data) { let data = new Date(target_data); let
+  dia = data.getDate(); let mes = data.getMonth() + 1; dia = dia < 10 ? '0' +
+  dia : dia; mes = mes < 10 ? '0' + mes : mes; let ano = data.getFullYear(); let
+  dataFormatada = dia + '/' + mes + '/' + ano; return dataFormatada }
+  attributes.data_contarato.forEach(element => { let dataFormatada =
+  formatarData(element.data_criacao) %>
+
+  <div class="card">
+    <div class="name_header_card">
+      <h4><%=element.nome %></h4>
+      <i id_contrato="<%=element.id %>" aberto="0" class="options_contrato fa-solid fa-bars"></i>
+    </div>
+    <div>
+      <red>Código:</red>
+      <span>#<%=element.id %></span>
+    </div>
+    <div>
+      <red>Data de Criação:</red>
+      <span><%=dataFormatada %></span>
+    </div>
+    <div>
+      <red>Clientes Vinculados:</red>
+      <span><%=element.numero_relacionamentos %> cliente(s)</span>
+    </div>
+    <div class="links_father">
+      <% 
+      if (parseInt(element.numero_relacionamentos) > 0){
+
+%> 
+<a id_contrato="<%=element.id %>"class='ver_emissao'>Ver Emissões</a>
+<%
+      }
+%>      <a id_contrato="<%=element.id %>" class="realizar_emissao">Realizar Emissão</a>
+    </div>
+  </div>
+  <%}); %>
+</section>
+
+<script type="module" src="./js/contratos.js"></script>

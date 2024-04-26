@@ -1,0 +1,217 @@
+<script src="./js/jquery.js"></script>
+<link
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css"
+/>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+<link
+  rel="stylesheet"
+  href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css"
+/>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<form class="modal" id="modal_add_processo" action="">
+  <input type="hidden" id="editando_processo" id_processo="">
+  <input type="hidden" name="" id="id_cliente_selecionado" />
+
+  <div class="left_side_form">
+    <h5 onclick="location.href='MeusProcessos'">< Voltar para Listagem de Processos.</h5>
+    <h2>Cadastrar Processo:</h2>
+    <div class="input_father">
+      <label for="nome_processo_add">Nome Processo:</label>
+      <input
+        type="text"
+        name="nome_processo_add"
+        id="nome_processo_add"
+        placeholder="Digite o Nome do Processo"
+      />
+    </div>
+    <div class="double_input_father">
+      <div class="input_father">
+        <label for="nome_processo_add">Placa do Carro:</label>
+        <input
+          type="text"
+          name="placa_processo"
+          id="placa_processo"
+          placeholder="Digite o Nome do Processo"
+        />
+      </div>
+      <div class="input_father">
+        <label for="select_cliente">Selecione o Cliente:</label>
+        <input
+          type="text"
+          name="select_cliente"
+          id="select_cliente"
+          placeholder="Digite o Nome ou Documento do Cliente"
+        />
+      </div>
+    </div>
+
+    <div class="input_files_column">
+      <div class="input_files_area">
+        <h4>Certificado de Registro e Licenciamento de Veículo (CRLV):</h4>
+        <div class="files_parent">
+          <div id="crlv_files" class="files"></div>
+
+          <div class="inputs_files">
+            <label for="fotos_crlv"
+              ><i class="fa-solid fa-table-cells"></i> Enviar Fotos</label
+            >
+            <input
+              files_father="crlv_files"
+              type="file"
+              name="fotos_crlv"
+              id="fotos_crlv"
+              multiple
+            />
+            <span
+              id="remover_fotos_crlv"
+              class="remover_fotos"
+              files_father="crlv_files"
+              ><i class="fa-solid fa-trash-can"></i> Excluir Fotos Enviadas
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="input_files_area">
+        <h4>Notificação de Atuação:</h4>
+        <div class="files_parent">
+          <div id="notificacao_atuacao" class="files"></div>
+
+          <div class="inputs_files">
+            <label for="notificacao_atuacao_input"
+              ><i class="fa-solid fa-table-cells"></i> Enviar Fotos</label
+            >
+            <input
+              files_father="notificacao_atuacao"
+              type="file"
+              name="notificacao_atuacao_input"
+              id="notificacao_atuacao_input"
+              multiple
+            />
+            <span
+              id="remover_fotos_notificacao_atuacao"
+              class="remover_fotos"
+              files_father="notificacao_atuacao"
+              ><i class="fa-solid fa-trash-can"></i> Excluir Fotos Enviadas
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="input_files_area">
+        <h4>Outros documentos:</h4>
+        <div class="files_parent">
+          <div id="outros_documentos" class="files"></div>
+
+          <div class="inputs_files">
+            <label for="outros_documentos_input"
+              ><i class="fa-solid fa-table-cells"></i> Enviar Fotos</label
+            >
+            <input
+              files_father="outros_documentos"
+              type="file"
+              name="outros_documentos_input"
+              id="outros_documentos_input"
+              multiple
+            />
+            <span
+              id="remover_fotos_outros_documentos"
+              class="remover_fotos"
+              files_father="outros_documentos"
+              ><i class="fa-solid fa-trash-can"></i> Excluir Fotos Enviadas
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="right_side_form">
+    <div class="info_cliente_father">
+      <div class="infos_cliente">
+        <h2>Informações do Cliente:</h2>
+        <span>Whatsapp: <strong class="whatsapp"></strong></span>
+        <span>Documento: <strong  class="cpf"></strong></span>
+        <h3>Visualizar Documentos:</h3>
+        <div class="imagens_father"></div>
+      </div>
+      <div class="loading_clientes">
+
+      </div>
+    </div>
+    <span
+      >Status do Processo:
+      <select id="status_processo_criado">
+
+      </select></span
+    >
+    <span class="edit_info">Data Criação: <strong class="data_criacao">03/04/2024 09h36</strong></span>
+    <span  class="edit_info">Ult. Atualização: <strong  class="ult_atualizacao">03/04/2024 09h36</strong></span>
+    <button>Salvar Processo</button>
+  </div>
+</form>
+<div class="header_options_page">
+  <div id="metricas_processos" class="header_options_parent"></div>
+  <div class="header_options_parent">
+    <label for="">Buscar Processo:</label>
+
+    <div class="input_search_father">
+      <input type="text" name="buscar_processos" id="buscar_processos" />
+      <i class="fa-solid fa-magnifying-glass"></i>
+    </div>
+  </div>
+  <div class="header_options_parent">
+ 
+  <button onclick="abrirModal('modal_add_processo'); $('#editando_processo').val(false)">Adicionar Processo</button>
+  </div>
+</div>
+<section id="table_processos">
+  <div class="title_father">
+    <% %>
+    <h2>Processos <strong>do Mês 04/24</strong></h2>
+    <span
+      ><i class="fa-solid fa-envelope-open-text"></i> Definir Mensagens e
+      Status</span
+    >
+  </div>
+  <div class="options_table_processos">
+    <div class="option_fahter">
+      <i class="fa-solid fa-calendar-days"></i>
+      <span
+        >Mês Selecionado: <br />
+        <strong>   <select name="selectMeses" id="selectMeses"> </select></strong></span
+      >
+    </div>
+    <div class="option_fahter">
+      <i class="fa-solid fa-bars-staggered"></i
+      ><span
+        >Ordenar Por: <br />
+        <strong id="order_by_text">Data de Criação</strong></span
+      >
+    </div>
+    <div class="option_fahter">
+      <i class="fa-solid fa-file-lines"></i
+      ><strong>Gerar Relatório Geral</strong>
+    </div>
+    <div class="option_fahter">
+      <i class="fa-solid fa-file-lines"></i
+      ><strong>Gerar Relatório Por Processo</strong>
+    </div>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <td class="order" id="ordenar_processo_name" ordem = "1">Processo</td>
+        <td>Status</td>
+        <td class="order" id="ordenar_processo_cliente"  ordem = "1">Cliente</td>
+        <td>Documento</td>
+        <td>CNH</td>
+        <td>Placa</td>
+        <td class="order" id="ordenar_processo_atualizacao"  ordem = "1">Atualização</td>
+        <td class="order" id="ordenar_processo_criacao"  ordem = "1">Criação</td>
+        <td>Notificar</td>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</section>
+<script src="./js/meusprocessos.js"></script>
