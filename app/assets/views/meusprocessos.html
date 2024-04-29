@@ -10,6 +10,46 @@ href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.4/jquery-confirm
   href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css"
 />
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<form class="modal" id="modal_add_status">
+  <input type="hidden" value="0" id="id_status">
+<div id="left_side">
+  <div class="up_side">
+    <h2>Status de Processo:</h2>
+    <div class="status_father">
+    <button>Deferido <i class="fa-solid fa-angle-right"></i></button>
+    </div>
+  </div>
+
+<span>Criar Novo Status</span>
+</div>
+<div id="right_side">
+  <div class="icon_trash">
+    <i id="delete_status_pre" class="fa-regular fa-trash-can"></i>
+  </div>
+  <div class="input_father_double">
+    <div class="input_father">
+      <label for="nome_status">Node do Status:</label>
+      <input type="text" name="nome_status" id="nome_status">
+    </div>
+    <div class="input_color_father">
+      <span for="cor_status">Cor Status:</span>
+      <label for="cor_status"></label>
+      <input type="color" name="cor_status" id="cor_status">
+    </div>
+  </div>
+  <h2>Mensagem do Status:</h2>
+  <span>Variáveis:</span>
+  <div class="buttons_variables">
+    <button type="button">Nome do Cliente</button>
+    <button type="button">Processo</button>
+    <button type="button">Status</button>
+  </div>
+  <textarea name="mensagem_status" id="mensagem_status" cols="30" rows="10"></textarea>
+  <div class="button_father">
+    <button>Salvar Status</button>
+  </div>
+</div>
+</form>
 <form class="modal" id="modal_add_processo" action="">
   <input type="hidden" id="editando_processo" id_processo="">
   <input type="hidden" name="" id="id_cliente_selecionado" />
@@ -169,6 +209,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.4/jquery-confirm
     <% %>
     <h2>Processos <strong>do Mês 04/24</strong></h2>
     <span
+    onclick="abrirModal('modal_add_status')"
       ><i class="fa-solid fa-envelope-open-text"></i> Definir Mensagens e
       Status</span
     >
@@ -188,14 +229,14 @@ href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.4/jquery-confirm
         <strong id="order_by_text">Data de Criação</strong></span
       >
     </div>
-    <div class="option_fahter">
+    <!-- <div class="option_fahter">
       <i class="fa-solid fa-file-lines"></i
       ><strong>Gerar Relatório Geral</strong>
     </div>
     <div class="option_fahter">
       <i class="fa-solid fa-file-lines"></i
       ><strong>Gerar Relatório Por Processo</strong>
-    </div>
+    </div> -->
   </div>
   <table>
     <thead>

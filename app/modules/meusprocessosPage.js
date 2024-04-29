@@ -34,6 +34,41 @@ class indexPage {
 
     })
   }
+  insertStatus() {
+    this.app.post("/MeusProcessos/insertStatus", async ctx => {
+      let status = ctx.request.body.status
+      let mensagem = ctx.request.body.mensagem
+      let cor = ctx.request.body.cor
+      let update = await this.db.exec(`INSERT INTO tb_status (id, nome, mensagem, cor) VALUES (NULL, ?, ?,?);`, [status, mensagem,cor])
+      let novoObjeto = await this.attributes()
+      novoObjeto = JSON.stringify(novoObjeto)
+      ctx.response.body = { status: 200, message: "sucesso", newObject: novoObjeto }
+
+    })
+  }
+  deleteStatus() {
+    this.app.post("/MeusProcessos/deleteStatus", async ctx => {
+      let id_status = ctx.request.body.id_status
+      let update = await this.db.exec(`DELETE FROM tb_status WHERE id = ?`, [id_status])
+      let novoObjeto = await this.attributes()
+      novoObjeto = JSON.stringify(novoObjeto)
+      ctx.response.body = { status: 200, message: "sucesso", newObject: novoObjeto }
+
+    })
+  }
+  updateInfoStatus() {
+    this.app.post("/MeusProcessos/updateInfoStatus", async ctx => {
+      let status = ctx.request.body.status
+      let id_status = ctx.request.body.id_status
+      let mensagem = ctx.request.body.mensagem
+      let cor = ctx.request.body.cor
+      let update = await this.db.exec(`UPDATE tb_status SET nome = ?,mensagem = ?,cor = ? WHERE id = ?`, [status, mensagem,cor,id_status])
+      let novoObjeto = await this.attributes()
+      novoObjeto = JSON.stringify(novoObjeto)
+      ctx.response.body = { status: 200, message: "sucesso", newObject: novoObjeto }
+
+    })
+  }
   selectClientes() {
     this.app.post("/MeusProcessos/selectClientes", async ctx => {
       let select_clientes = await this.db.exec('SELECT tb_clientes.nome,tb_clientes.id,JSON_ARRAYAGG(tb_imagens_clientes.path) AS caminhos FROM tb_clientes LEFT JOIN tb_imagens_clientes ON tb_imagens_clientes.cliente_id = tb_clientes.id GROUP BY id;')
@@ -154,7 +189,10 @@ class indexPage {
     this.selectCliente()
     this.insertProcesso()
     this.selectProcesso()
+    this.updateInfoStatus()
     this.updateProcesso()
+    this.deleteStatus()
+    this.insertStatus()
   }
 }
 module.exports = indexPage

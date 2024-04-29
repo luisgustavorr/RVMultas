@@ -23,6 +23,7 @@
     "koa-static": "^5.0.0",
     "muhammara": "^4.1.0",
     "mysql": "^2.18.1",
+    "mysql-connection-pool-manager": "^1.5.9",
     "npm": "^10.5.1",
     "pdf.js-extract": "^0.2.1",
     "pdf2table": "^0.0.2"

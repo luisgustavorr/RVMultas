@@ -3,6 +3,19 @@ let files_uploaded = []
 let clientes = []
 let processos_filtrados = attr_obj.processos
 console.log(attr_obj.processos)
+console.log(attr_obj)
+function createStatusButton(array) {
+  $(".status_father").html("")
+  array.forEach(function (e) {
+    console.log(e)
+    $(".status_father").append(`
+    <button id_status="${e.id}" type="button">${e.nome} <i class="fa-solid fa-angle-right"></i></button>
+
+    `)
+  })
+}
+
+createStatusButton(attr_obj.status)
 function ordenarArray(array, criterio, campo) {
   // Função de comparação para ordenar por nome
   function compararPorNome(a, b) {
@@ -153,7 +166,15 @@ function createProcessTable(obj_arg) {
   })
   $("#table_processos tbody").html(tbody)
 }
-createProcessTable(attr_obj.processos)
+createProcessTable(attr_obj.processos.filter(e => {
+  let data_atual = new Date()
+  let data_processo = new Date(e.criacao)
+  if (data_processo.getMonth() == data_atual.getMonth()) {
+    return true
+  } else {
+    return false
+  }
+}))
 $("#buscar_processos").change(function () {
   processos_filtrados = buscar($(this), attr_obj.processos, "nome_processo")
   createProcessTable(processos_filtrados)
@@ -167,8 +188,21 @@ $("#table_processos").on("change", ".status", function () {
   $.post("/MeusProcessos/updateStatus", data, (ret) => {
     console.log(ret)
     attr_obj = JSON.parse(ret.newObject)
-    createProcessTable(buscar($("#buscar_processos"), attr_obj.processos, "nome_processo"))
-    gerarMetricas(attr_obj)
+    processos_filtrados = buscar($("#buscar_processos"), attr_obj.processos, "nome_processo").filter(e => {
+      let data_explodida = e.criacao.split("-")
+      let data_separada = $('#selectMeses').val().split("_")
+      let mes = data_separada[1]
+      let ano = data_separada[0]
+      let data = ano + "-" + mes
+      let data_db = data_explodida[0] + "-" + data_explodida[1]
+
+
+      if (data_db == data) {
+        return true
+      }
+    })
+    createProcessTable(processos_filtrados)   
+     gerarMetricas(attr_obj)
 
 
   })
@@ -455,7 +489,8 @@ function gerarSelectMeses(anoSelecionado = null, mesSelecionado = null) {
     let optgroupAtual = $('<optgroup label="' + anoAnterior_2 + '"></optgroup>');
 
     for (let e = 0; e < 12; e++) {
-      if (e == mesAtual && i == anoAlvo) {
+
+      if (e == mesAtual && anoAnterior_2 == anoAlvo) {
         optgroupAtual.append('<option selected value="' + anoAnterior_2 + '_' + (e + 1).toString().padStart(2, '0') + '">' + meses[e] + '</option>');
       } else {
         optgroupAtual.append('<option value="' + anoAnterior_2 + '_' + (e + 1).toString().padStart(2, '0') + '">' + meses[e] + '</option>');
@@ -481,14 +516,18 @@ function gerarSelectMeses(anoSelecionado = null, mesSelecionado = null) {
       console.log("selec")
 
       $(".title_father h2 strong").text(`do Mês ${completo}`)
-      let data = ano+"-"+mes
+      let data = ano + "-" + mes
 
-      processos_filtrados =  buscar($("#buscar_processos"), attr_obj.processos, "nome_processo").filter(e=> {
+      processos_filtrados = buscar($("#buscar_processos"), attr_obj.processos, "nome_processo").filter(e => {
         let data_explodida = e.criacao.split("-")
-        let data_db = data_explodida[0]+"-"+data_explodida[1]
+        let data_separada = $('#selectMeses').val().split("_")
+        let mes = data_separada[1]
+        let ano = data_separada[0]
+        let data = ano + "-" + mes
+        let data_db = data_explodida[0] + "-" + data_explodida[1]
 
 
-        if(data_db == data){
+        if (data_db == data) {
           return true
         }
       })
@@ -515,6 +554,7 @@ $("#ordenar_processo_name").click(async function () {
 function inverterTabela(elemento) {
   $("#table_processos table thead tr td i").remove()
   $("#order_by_text").text($(elemento).text())
+  
   if ($(elemento).attr("ordem") == "1") {
     $(elemento).attr("ordem", 0)
     $(elemento).html('<i class="fa-solid fa-chevron-up"></i>' + $(elemento).text())
@@ -564,4 +604,101 @@ $("#ordenar_processo_criacao").click(function () {
   })
   console.log(processos_filtrados)
   inverterTabela($(this))
+})
+$("#modal_add_status .status_father").on("click", "button", function (e) {
+  console.log($(this).attr("id_status"))
+  $(".status_father button").removeClass("selected")
+  $(this).addClass("selected")
+  let status = attr_obj.status.filter(e => e.id == $(this).attr("id_status"))[0]
+  console.log(status)
+  $("#delete_status").parent().html('  <i id="delete_status_pre" class="fa-regular fa-trash-can"></i> ')
+  $("#delete_status").attr("id","delete_status_pre")
+
+  $("#id_status").val(status.id)
+  $("#nome_status").val(status.nome)
+  $("#cor_status").val(status.cor)
+  $("#mensagem_status").val(status.mensagem)
+})
+$("#modal_add_status #left_side span").click(function (e) {
+  $(".status_father button").removeClass("selected")
+  $("#modal_add_status input[type='text']").val("")
+  $("#modal_add_status input[type='color']").val("#000000")
+  $("#id_status").val(0)
+  $("#delete_status").parent().html('  <i id="delete_status_pre" class="fa-regular fa-trash-can"></i> ')
+  $("#delete_status").attr("id","delete_status_pre")
+
+  $("#modal_add_status textarea").val("")
+
+})
+$("#modal_add_status").submit(function (e) {
+  e.preventDefault()
+  let data = {
+    "cor": $("#cor_status").val(),
+    "status": $("#nome_status").val(),
+    "mensagem": $("#mensagem_status").val()
+  }
+  let alvo = "insertStatus"
+  if ($("#id_status").val() != 0) {
+    alvo = "updateInfoStatus"
+    data["id_status"] = $("#id_status").val()
+  }
+  $.post("/MeusProcessos/" + alvo, data, (ret) => {
+    attr_obj = JSON.parse(ret.newObject)
+    createStatusButton(attr_obj.status)
+    $("#modal_add_status #left_side span").click()
+    processos_filtrados = buscar($("#buscar_processos"), attr_obj.processos, "nome_processo").filter(e => {
+      let data_explodida = e.criacao.split("-")
+      let data_separada = $('#selectMeses').val().split("_")
+      let mes = data_separada[1]
+      let ano = data_separada[0]
+      let data = ano + "-" + mes
+      let data_db = data_explodida[0] + "-" + data_explodida[1]
+
+
+      if (data_db == data) {
+        return true
+      }
+    })
+    createProcessTable(processos_filtrados)   
+
+  })
+})
+$(".buttons_variables button").click(function () {
+  let variable = "{" + $(this).text().replace(/ /g, "_") + "}"
+  console.log(variable)
+  $("#mensagem_status").val($("#mensagem_status").val() + " " + variable + " ")
+})
+let data_atual = new Date()
+let mesAtual = data_atual.getMonth() + 1
+let anoAtual = data_atual.getFullYear()
+$("#selectMeses").val(anoAtual + "_" + mesAtual.toString().padStart(2, '0'))
+$("body").on("click","#delete_status_pre",function(){
+  $(this).attr("id","delete_status")
+  $(this).parent().html(" Clique na lixeira para confirmar :" + $(this).parent().html())
+})
+$("body").on("click","#delete_status",function(){
+  let data = {
+    id_status :  $("#id_status").val()
+  }
+  $.post("/MeusProcessos/deleteStatus",data,function(ret){
+    $("#modal_add_status #left_side span").click()
+
+    console.log(ret)
+    attr_obj = JSON.parse(ret.newObject)
+    createStatusButton(attr_obj.status)
+    processos_filtrados = buscar($("#buscar_processos"), attr_obj.processos, "nome_processo").filter(e => {
+      let data_explodida = e.criacao.split("-")
+      let data_separada = $('#selectMeses').val().split("_")
+      let mes = data_separada[1]
+      let ano = data_separada[0]
+      let data = ano + "-" + mes
+      let data_db = data_explodida[0] + "-" + data_explodida[1]
+
+
+      if (data_db == data) {
+        return true
+      }
+    })
+    createProcessTable(processos_filtrados)  
+  })
 })

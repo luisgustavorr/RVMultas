@@ -63,7 +63,3 @@ $("#buscar_clientes_processos").change(function(){
   createCards( buscar($(this),attr_obj,"nome"))
 })
 
-//status [
-// 0 : em processo
-// 1 : deferido
-//]

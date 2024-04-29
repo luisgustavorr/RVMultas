@@ -345,7 +345,11 @@ fundo {
   bottom: 0;
   left: 0;
   right: 0;
+  z-index: 1;
   background: #000000db;
+}
+.modal{
+  z-index: 2;
 }
 #modal_add_contrato {
   
@@ -1083,6 +1087,178 @@ fundo {
 }
 #table_processos table thead tr .order{
 cursor: pointer;
+}
+#modal_add_status {
+  display: none;
+  position: absolute;
+  background: white;
+  width: 70%;
+  height: 90%;
+  transform: translate(-50%,-50%);
+  top: 50%;
+  left: 50%;
+  border-radius: 15px;
+}
+#modal_add_status #left_side {
+  display: flex;
+  flex-direction: column;
+  background: #F5F5F5;
+  width: 35%;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20px;
+  border-radius: 15px 0 0 15px;
+}
+#modal_add_status #left_side h2 {
+  color: #5A0001;
+  font-size: 30px;
+  font-weight: 500;
+}
+#modal_add_status .status_father {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+#modal_add_status .status_father button {
+  display: flex;
+  width: 100%;
+  height: 40px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid gray;
+  padding: 0 10px;
+  align-items: center;
+  font-size: 25px;
+  color: gray;
+  font-weight: 400;
+  cursor: pointer;
+  justify-content: space-between;
+}
+#modal_add_status #left_side .up_side {
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+}
+#modal_add_status #left_side span {
+  background: #C8C8C8;
+  width: 100%;
+  height: 50px;
+  border-radius: 0 0 0 15px;
+  color: #6D6D6D;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 25px;
+}
+#right_side .input_father_double {
+  display: flex;
+  justify-content: space-between;
+}
+
+#right_side .input_father,#right_side .input_color_father {
+  display: flex;
+  flex-direction: column;
+}
+#right_side {
+  width: 65%;
+  display: flex;
+  flex-direction: column;
+  padding: 35px;
+  gap: 10px;
+}
+#right_side .button_father {
+  display: flex;
+  justify-content: center;
+}
+#right_side .button_father button {
+  height: 40px;
+  width: 200px;
+  background: #5A0001;
+  color: white;
+  border-radius: 10px;
+  border: none;
+  font-size: 18px;
+  font-weight: 300;
+  cursor: pointer;
+}
+.buttons_variables{
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+.buttons_variables button {
+  background: #767676;
+  border: none;
+  border-radius: 5px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  padding: 0 10px;
+}
+#right_side span {
+  color: #4f4f4f;
+  font-size: 18px;
+  font-weight: 600;
+}
+#right_side h2 {
+  color: #5A0001;
+  font-size: 30px;
+  font-weight: 400;
+}
+#right_side .input_father label, #right_side .input_color_father span{
+  color: #5A0001;
+  font-size: 20px;
+  font-weight: 500;
+
+}
+#right_side .input_father{
+  width: 70%;
+}
+#right_side .input_color_father {
+  width: 25%;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+#right_side .input_color_father input[type="color"]{
+  height: 30px;
+  border: none;
+  width: 100%;
+}
+#right_side .input_father input {
+  border: none;
+  border-bottom: 2px solid #A1A1A1;
+  width: 100%;
+  height: 30px;
+  font-size: 18px;
+  padding: 5px;
+  color: #424242;
+}
+#mensagem_status {
+  max-width: 100%;
+  max-height: 70%;
+  height: 100%;
+  width: 100%;
+}
+#modal_add_status .status_father .selected {
+  background: #5A0001;
+  color: white;
+  height: 50px;
+}
+#right_side .icon_trash {
+  width: 100%;
+  text-align: end;
+  font-size: 20px;
+  color: #404040;
+}
+#right_side .icon_trash i{
+  cursor: pointer;
 }
 @keyframes rotate {
   0%{
