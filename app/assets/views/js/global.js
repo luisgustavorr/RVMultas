@@ -24,6 +24,17 @@ function formatarData(target_data) {
     };
     return str.replace(/[áàãâéèêíìîóòõôúùûÁÀÃÂÉÈÊÍÌÎÓÒÕÔÚÙÛ]/g, match => tabelaSubstituicao[match]);
   }
+  function makeid(length) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+    return result;
+  }
 $(document).ready(function () {
   $(".loading").css("display","none")
     let id_page = $(location).attr("pathname").replace(/%20/g, "").toLowerCase().replace(/\//g, "")
@@ -51,5 +62,34 @@ function buscar(DOMElement,target_array,target_key){
     let new_array = target_array.filter(obj => removerAcentos(obj[target_key]).toLowerCase().startsWith(removerAcentos(termoDeBusca)));
     return new_array
   }
+  function createFileObjectFromExistingFile(existingFile, name) {
+    // Cria um novo objeto File
+    console.log(existingFile)
+    var newFile = new File([existingFile], name, { type: existingFile.type });
+  
+    return newFile;
+  }
+  function fetchFileContent(filePath) {
+    return fetch(filePath)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Falha ao fazer a requisição');
+        }
+        return response.blob();
+      });
+  }
+  $("body").on("click","img",function(){
+    console.log("asdwd")
+  let src =  $(this).attr("src")
+  let nome_arquivo = src.split("/").slice(-1)[0]
+  console.log(nome_arquivo)
+    $("#modal_zoom_imagem .img_father").html(`
+    <img id='img_zoomed' src="${src}">
+    `)
 
+    $("#modal_zoom_imagem ").css("display","flex")
+    $("#img_zoomed").ezPlus({responsive:true,scrollZoom:true})
+    $("fundoIMG ").css("display","flex")
+    $("#modal_zoom_imagem span").text(nome_arquivo)
+  })
 

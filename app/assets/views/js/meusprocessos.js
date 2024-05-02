@@ -57,17 +57,7 @@ function ordenarArray(array, criterio, campo) {
   // Ordenar o array usando a função de comparação apropriada
   return array.sort(funcaoComparacao);
 }
-function makeid(length) {
-  let result = '';
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  const charactersLength = characters.length;
-  let counter = 0;
-  while (counter < length) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    counter += 1;
-  }
-  return result;
-}
+
 function addImage(event) {
   $(`.remover_fotos[files_father='${$(event.target).attr("files_father")}']`).html(`<i class="fa-solid fa-trash-can"></i> Excluir Fotos Enviadas`)
   $(`.remover_fotos[files_father='${$(event.target).attr("files_father")}']`).removeAttr("removendo")
@@ -116,7 +106,7 @@ function gerarMetricas(obj) {
     `
   })
   let html = `
-  <h3>Métricas Clientes</h3>
+  <h3>Métricas Processos</h3>
   <span>Processos criados no mês: <red>${obj.processosMes.processosMes} Processo(s)</red></span>
   ${metrica}
 `
@@ -306,7 +296,7 @@ function loadClientImages(array) {
       } else {
         $(".info_cliente_father .imagens_father").append(`
       <div class="cliente_image_father">
-      <img src="../uploads/imagens_clientes/${element}" />
+      <img src="../uploads/imagens_clientes/cliente_${$("#id_cliente_selecionado").val()}/${element}" />
       <span>${element}</span>
       </div>
       `)
@@ -452,22 +442,8 @@ $("#table_processos tbody").on("click", ".editar_processo", function (ret) {
     console.log(files_uploaded)
   })
 })
-function createFileObjectFromExistingFile(existingFile, name) {
-  // Cria um novo objeto File
-  console.log(existingFile)
-  var newFile = new File([existingFile], name, { type: existingFile.type });
 
-  return newFile;
-}
-function fetchFileContent(filePath) {
-  return fetch(filePath)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Falha ao fazer a requisição');
-      }
-      return response.blob();
-    });
-}
+
 function gerarSelectMeses(anoSelecionado = null, mesSelecionado = null) {
   var select = $('#selectMeses');
   let diferencaAnos = 5

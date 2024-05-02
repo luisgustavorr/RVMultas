@@ -1,16 +1,24 @@
+<script src="./js/jquery.mask.js"></script>
 <form class="modal" id="modal_adicionar_cliente">
   <h3>Adicionar <strong>Novo Cliente:</strong></h3>
-  <div class="input_father_single">
+  <div class="input_father_duo">
+
+  <div class="input_father_single width_70">
     <label for="nome_cliente">Nome do Cliente:</label>
     <input type="text" name="nome_cliente" id="nome_cliente">
   </div>
+  <div class="input_father_single width_28">
+    <label for="cnh_cliente">CNH:</label>
+    <input type="text" name="cnh_cliente" id="cnh_cliente">
+  </div>
+  </div>
   <div class="input_father_duo">
-    <div class="input_father_single">
+    <div class="input_father_single width_28">
       <label for="tel_cliente">Telefone:</label>
       <input type="text" name="tel_cliente" id="tel_cliente">
     </div>
-    <div class="input_father_single">
-      <label for="email_cliente">Email:</label>
+    <div class="input_father_single width_70">
+      <label for="email_cliente ">Email:</label>
       <input type="text" name="email_cliente" id="email_cliente">
     </div>
   </div>
@@ -20,14 +28,23 @@
       <input type="text" name="cpf_cliente" id="cpf_cliente">
     </div>
     <div class="input_father_single">
-      <label for="vencimento_cliente">Vencimento:</label>
+      <label for="vencimento_cliente">Vencimento CNH:</label>
       <input type="text" name="vencimento_cliente" id="vencimento_cliente">
     </div>
   </div>
   <div class="images_father">
     <div class="header_images">
-      
+    
+    <label >Fotos de Documentos:<br><span>* Adicione fotos legíveis com frente e verso.</span> </label>
+      <label id="label_input_files" for="fotos_documentos">Adicionar Documento</label>
+      <input  accept="image/*" type="file" name="fotos_documentos" multiple id="fotos_documentos">
     </div>
+    <div id="images_clientes_father">
+    
+    </div>
+  </div>
+  <div id="button_father_add_cliente">
+    <button>Salvar Cliente</button>
   </div>
 </form>
 <div class="header_options_page">
@@ -50,7 +67,7 @@
     </div>
   </div>
   <div class="header_options_parent">
-    <button>Adicionar Cliente</button>
+    <button onclick="   resetInsertCliente();$('#modal_adicionar_cliente').attr('id_cliente',0);$('#modal_adicionar_cliente h3').html('Adicionar <strong>Novo Cliente:</strong>');abrirModal('modal_adicionar_cliente')">Adicionar Cliente</button>
   </div>
 </div>
 <!-- <div id="filter_clientes">
@@ -60,43 +77,6 @@
 </div> -->
 <section id="cards_father">
 
-  <% 
-      function formatarData(target_data) {
-        let data = new Date(target_data);
-        let dia = data.getDate();
-        let mes = data.getMonth() + 1; 
-       dia = dia < 10 ? '0' + dia : dia;
-        mes = mes < 10 ? '0' + mes : mes;
-        let ano = data.getFullYear();
-      let dataFormatada = dia + '/' + mes + '/' + ano;
-      return dataFormatada
-
-      }
-  console.log(attributes)
-  attributes.forEach(element => {
-
-    let dataFormatada = formatarData(element.vencimento_cnh)
-    %>
-    <div class="card">
-      <div class="name_header_card">
-      <h4><%=element.nome %> </h4>
-      <i class="fa-regular fa-trash-can"></i>
-        </div>
-      <div>
-        <red>CNH:</red>
-        <span><%=element.cnh %></span>
-      </div>
-      <div>
-        <red>Data de Vencimento:</red>
-        <span><%=dataFormatada %></span>
-      </div>
-      <div>
-        <red>Total de Processos:</red>
-        <span><%=element.numero_processos %> processo(s)</span>
-      </div>
-      <a href="">Ver Mais Informações</a>
-    </div>
-  <%}); %>
 
 </section>
 

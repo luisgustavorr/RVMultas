@@ -41,7 +41,7 @@
       <input
         type="hidden"
         id="attributes"
-        value="<%=JSON.stringify(attributes)%>"
+        value="true"
         disabled
       />
       <script src="./js/jquery.js"></script>
@@ -75,7 +75,7 @@
         onclick="$('#modal_zoom_imagem').css('display','none');$('fundoIMG').css('display','none')"
       ></fundoIMG>
       <div class="loading"></div>
-      <%- body %>
+      <H1>ESSA PÁGINA NÃO EXISTE</H1>
     </main>
     <!-- Inclua aqui o seu rodapé, scripts JS, etc -->
   </body>
