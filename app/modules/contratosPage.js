@@ -1,5 +1,7 @@
 const pdf = require('html-pdf')
 let muhammara = require('muhammara')
+const fs = require("fs")
+
 const { createReadStream, createWriteStream,writeFileSync} = require('fs');
 class contratosPage {
   constructor(app, db) {
@@ -100,7 +102,7 @@ ORDER BY
       let nomeContrato = ctx.request.body.nomeContrato
       let id_contrato = ctx.request.body.idContrato
       let idCliente = ctx.request.body.idCliente
-      let select = await this.db.exec(`SELECT tb_clientes.cnh, tb_clientes.nome,CURRENT_DATE() as data_atual FROM tb_contratos_relacionados INNER JOIN tb_clientes ON tb_clientes.id = tb_contratos_relacionados.id_cliente WHERE tb_contratos_relacionados.id_contrato = ? AND tb_contratos_relacionados.id_cliente = ?`, [id_contrato, idCliente])
+      let select = await this.db.exec(`SELECT tb_clientes.id,tb_clientes.cnh, tb_clientes.nome,CURRENT_DATE() as data_atual FROM tb_contratos_relacionados INNER JOIN tb_clientes ON tb_clientes.id = tb_contratos_relacionados.id_cliente WHERE tb_contratos_relacionados.id_contrato = ? AND tb_contratos_relacionados.id_cliente = ?`, [id_contrato, idCliente])
       select = select[0]
       let html = ctx.request.body.htmlAlvo.replace(/{Nome do Cliente}/g, select.nome).replace(/{Documento Cliente}/g, select.cnh).replace(/{Data Atual}/g, this.formatarData(select.data_atual))
 
@@ -120,7 +122,13 @@ ORDER BY
       })
       await pdfCreator.then()
       ctx.response.body = pdfBuffer
-      writeFileSync(`app/assets/views/uploads/contratos/${nomeContrato}_${select.nome}.pdf`, pdfBuffer, 'binary')
+      let destinationDir = `app/assets/views/uploads/contratos/cliente_${select.id}/`
+      fs.rmSync(destinationDir, { recursive: true, force: true });
+
+ 
+        fs.mkdirSync(destinationDir, { recursive: true });
+      
+      writeFileSync(`app/assets/views/uploads/contratos/cliente_${select.id}/${nomeContrato}_${select.nome}.pdf`, pdfBuffer, 'binary')
     })
   }
   async assinarPDFPOST() {
@@ -130,11 +138,11 @@ ORDER BY
       let idCliente = ctx.request.body.idCliente
       let select = await this.db.exec(`SELECT tb_clientes.cpf, tb_clientes.nome,CURRENT_DATE() as data_atual FROM tb_contratos_relacionados INNER JOIN tb_clientes ON tb_clientes.id = tb_contratos_relacionados.id_cliente WHERE tb_contratos_relacionados.id_contrato = ? AND tb_contratos_relacionados.id_cliente = ?`, [id_contrato, idCliente])
       select = select[0]
-      const inputPDFPath = `app/assets/views/uploads/contratos/${nomeContrato}_${select.nome}.pdf`;
-      const signatureText = `Assinado por: ${select.nome} (${select.cpf}) \r}
-      `;
+      // const inputPDFPath = `app/assets/views/uploads/contratos/${nomeContrato}_${select.nome}.pdf`;
+      // const signatureText = `Assinado por: ${select.nome} (${select.cpf}) \r}
+      // `;
 
-      this.assinarPDF(inputPDFPath,inputPDFPath,"[Assinatura do Contratante]", signatureText)
+      // this.assinarPDF(inputPDFPath,inputPDFPath,"[Assinatura do Contratante]", signatureText)
       ctx.response.body = { status: 200, message: "sucesso" }
 
     })
@@ -142,6 +150,7 @@ ORDER BY
   }
 
   assinarPDF(inputFilePath, outputFilePath, findText, replaceText) {  
+    console.log(inputFilePath)
     const pdfReader = muhammara.createReader(inputFilePath);
     const pdfWriter = muhammara.createWriter(outputFilePath);
 

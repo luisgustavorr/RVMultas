@@ -59,7 +59,7 @@ function abrirModal(modal){
 }
 function buscar(DOMElement,target_array,target_key){
     let termoDeBusca = $(DOMElement).val().toLowerCase(); 
-    let new_array = target_array.filter(obj => removerAcentos(obj[target_key]).toLowerCase().startsWith(removerAcentos(termoDeBusca)));
+    let new_array = target_array.filter(obj => removerAcentos(obj[target_key]).toLowerCase().includes(removerAcentos(termoDeBusca)));
     return new_array
   }
   function createFileObjectFromExistingFile(existingFile, name) {
