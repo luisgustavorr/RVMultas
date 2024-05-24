@@ -1,6 +1,9 @@
 var mysql = require('mysql');
 const PoolManager = require('mysql-connection-pool-manager');
 
+//localhost
+//luis
+//G4l01313
 
 class mysqlConnection {
     constructor() {

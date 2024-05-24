@@ -1,18 +1,24 @@
 const fs = require("fs")
 const path = require("path")
 class indexPage {
-  constructor(app, db) {
+  constructor(app, db,ctx) {
     this.app = app
     this.db = db
+    this.ctx = ctx
     this.iniciarPagina()
   }
   async attributes() {
+    var url = require('url');
+    var url_parts = url.parse(this.ctx.request.url, true);
+    var query = url_parts.query;
+
     let metricas = await this.db.exec('SELECT COUNT(tb_processos.id) as quantidade,tb_status.nome  as status FROM tb_processos INNER JOIN tb_status ON tb_status.id = tb_processos.status WHERE MONTH(CURRENT_DATE) = MONTH(tb_processos.criacao)  GROUP BY tb_processos.status   ORDER BY COUNT(tb_processos.id) DESC LIMIT 2;')
 
     let result = await this.db.exec("SELECT tb_clientes.id,tb_clientes.vencimento_cnh as vencimento_cnh,tb_clientes.nome,tb_clientes.cnh,COUNT(tb_processos_relacionados.id) as numero_processos FROM `tb_clientes` LEFT JOIN tb_processos_relacionados ON tb_processos_relacionados.id_cliente = tb_clientes.id GROUP BY tb_clientes.id;")
     let return_value = {
       "clientes": result,
       "metricas": metricas,
+      "id_cliente":query.cliente
 
     }
     return return_value

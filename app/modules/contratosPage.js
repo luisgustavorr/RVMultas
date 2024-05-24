@@ -4,14 +4,17 @@ const fs = require("fs")
 
 const { createReadStream, createWriteStream,writeFileSync} = require('fs');
 class contratosPage {
-  constructor(app, db) {
+  constructor(app, db,ctx) {
     this.app = app
     this.db = db
+    this.ctx = ctx
     this.iniciarPagina()
-
   }
 
   async attributes() {
+    var url = require('url');
+    var url_parts = url.parse(this.ctx.request.url, true);
+    var query = url_parts.query;
 
     let result = await this.db.exec(`SELECT 
     tb_contratos.id,
@@ -39,7 +42,9 @@ ORDER BY
     let return_value = {
       "data_contarato": result,
       "quantidade_contrato": quantidade_contrato,
-      "data_clientes": clientes_result
+      "data_clientes": clientes_result,
+      "id_cliente":query.cliente
+
     }
 
 
@@ -49,7 +54,7 @@ ORDER BY
     this.app.post("/Contratos/insertContrato", async ctx => {
       let texto = ctx.request.body.text
       let nome = ctx.request.body.nome
-      let insertContratoQuery = await this.db.exec(`INSERT INTO tb_contratos (id, text, nome, data_criacao) VALUES (NULL, ?, ?, CURRENT_DATE() )`, [texto, nome])
+      let insertContratoQuery = await this.db.exec(`INSERT INTO tb_contratos (id, text, nome, data_criacao,usuario_id) VALUES (NULL, ?, ?, CURRENT_DATE(),? )`, [texto, nome,this.ctx.cookies.get("id_cliente")])
       ctx.response.body = { status: 200 }
     })
   }
@@ -63,7 +68,7 @@ ORDER BY
   }
   updateContrato() {
     this.app.post("/Contratos/updateContrato", async ctx => {
-      let texto = ctx.request.body.text
+      let texto = ctx.request.body.textz
       let nome = ctx.request.body.nome
       let id_contrato = ctx.request.body.id_contrato
       let insertContratoQuery = await this.db.exec(`UPDATE tb_contratos SET text = ?, nome = ?,data_criacao = CURRENT_DATE() WHERE id = ?`, [texto, nome, id_contrato])

@@ -1,82 +1,92 @@
 <!-- layout.html -->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RVMultas</title>
-    <link rel="stylesheet" href="./style/style.css" />
-    <link rel="stylesheet" href="./icons/css/all.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
 
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
-      rel="stylesheet"
-    />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RVMultas</title>
+  <link rel="stylesheet" href="./style/style.css" />
+  <link rel="stylesheet" href="./style/jquery-confirm.css" />
+  <link rel="stylesheet" href="./icons/css/all.css" />
+  <link rel="stylesheet" href="./style/canvasdraw.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
 
-    <!-- Inclua aqui seus estilos CSS, scripts JS, etc -->
-  </head>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+    rel="stylesheet" />
+  <script src=" https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js "></script>
+  <!-- Inclua aqui seus estilos CSS, scripts JS, etc -->
+</head>
 
-  <body>
+<body>
+  <div id="notifications_body">
+
+  </div>
+  <% if(attributes.permissao>=2){
+    %>
     <aside id="sidebar">
-      <a href="MeusClientes" id="meusclientes"
-        ><i class="fa-solid fa-users"></i> Meus Clientes</a
-      >
-      <a href="MeusProcessos" id="meusprocessos"
-        ><i class="fa-solid fa-folder"></i> Meus Processos</a
-      >
-      <a href="Contratos" id="contratos"
-        ><i class="fa-regular fa-file-lines"></i> Contratos</a
-      >
-      <a href="MeusDados" id="meusdados"
-        ><i class="fa-solid fa-book"></i> Meus Dados</a
-      >
+      <a href="MeusClientes" id="meusclientes"><i class="fa-solid fa-users"></i> Meus Clientes</a>
+      <a href="MeusProcessos" id="meusprocessos"><i class="fa-solid fa-folder"></i> Meus Processos</a>
+      <a href="Contratos" id="contratos"><i class="fa-regular fa-file-lines"></i> Contratos</a>
+      <a href="MeusDados" id="meusdados"><i class="fa-solid fa-book"></i> Meus Dados</a>
+      <a onclick="destroySession()" id="sair"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
     </aside>
-    <header>
-      <img id="logo_header" src="./images/Multas (1) 1.png" alt="" />
-    </header>
-    <main>
-      <!-- Aqui será renderizado o conteúdo específico de cada página -->
-      <input
-        type="hidden"
-        id="attributes"
-        value="<%=JSON.stringify(attributes)%>"
-        disabled
-      />
-      <script src="./js/jquery.js"></script>
+    <% }else{%>
+      <aside id="sidebar">
 
-      <script src="./js/alertar.js"></script>
-      <script src="./js/global.js"></script>
-      <script src="./js/moment.js"></script>
+        <a href="ProcessosCliente" id="processoscliente"><i class="fa-solid fa-folder"></i> Meus Processos</a>
 
-      <script
-        type="text/javascript"
-        src="https://cdn.rawgit.com/igorlino/elevatezoom-plus/1.1.6/src/jquery.ez-plus.js"
-      ></script>
+        <a onclick="destroySession()" id="sair"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+      </aside>
+      <% }%>
+        <header>
+          <img sem_zoom="true" id="logo_header" src="./images/Multas (1) 1.png" alt="" />
+          <button onclick="location.href='LoginCliente'" id="login_cliente_button">Sou Cliente</button>
+          <% if(attributes.permissao>=2){
+            %>
+            <i id="notificacoes" class="fa-regular fa-bell"></i>
+            <% }%>
 
-      <div class="modal" id="modal_zoom_imagem">
-        <div class="close_modal_father">
-          <i
-            onclick="$('#modal_zoom_imagem').css('display','none');$('fundoIMG').css('display','none')"
-            class="fa-solid fa-xmark"
-          ></i>
-        </div>
-        <div class="img_father">
-          <img id='img_zoomed' >
+              <i id="open_menu" class="fa-solid fa-bars"></i>
+        </header>
+        <main>
+          <!-- Aqui será renderizado o conteúdo específico de cada página -->
+          <input type="hidden" id="attributes" value="<%=JSON.stringify(attributes)%>" disabled />
+          <script src="./js/jquery.js"></script>
+          <script src="./js/jqueryzoom.js"></script>
+          <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css" />
+          <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+          <script src="./js/alertar.js"></script>
+          <script src="./js/global.js"></script>
+          <script src="./js/bcpaint.js"></script>
+          <script src="./js/moment.js"></script>
+          <script src="./js/jquery.mask.js"></script>
 
-        </div>
-        <span></span>
-      </div>
-      <fundo onclick="fecharModal()"></fundo>
-      <div id="demo-container">
-      </div>
-      <fundoIMG
-        onclick="$('#modal_zoom_imagem').css('display','none');$('fundoIMG').css('display','none')"
-      ></fundoIMG>
-      <div class="loading"></div>
-      <%- body %>
-    </main>
-    <!-- Inclua aqui o seu rodapé, scripts JS, etc -->
-  </body>
+          <script src="./js/jquery-confirm.js"></script>
+
+
+
+          <div class="modal" id="modal_zoom_imagem">
+            <div class="close_modal_father">
+              <i onclick="$('#modal_zoom_imagem').css('display','none');$('fundoIMG').css('display','none')"
+                class="fa-solid fa-xmark"></i>
+            </div>
+            <div class="img_father">
+              <img sem_zoom="true" id='img_zoomed'>
+
+            </div>
+            <span></span>
+          </div>
+          <fundo onclick="fecharModal()"></fundo>
+
+          <fundoIMG onclick="$('#modal_zoom_imagem').css('display','none');$('fundoIMG').css('display','none')">
+          </fundoIMG>
+          <div class="loading"></div>
+          <%- body %>
+        </main>
+        <!-- Inclua aqui o seu rodapé, scripts JS, etc -->
+</body>
+
 </html>

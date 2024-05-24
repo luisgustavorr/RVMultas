@@ -1,0 +1,83 @@
+<link
+rel="stylesheet"
+href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css"
+/>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<form class="modal" id="modal_add_user">
+    <input type="hidden" disabled id="id_user_editando" value="0">
+
+<h3>Criar <strong>Nova Conta</strong></h3>
+<label  for="login_user">Login do <strong>Usuário:</strong></label>
+<input required type="text" name="login_user" id="login_user">
+<label for="email_user">Email de <strong>Recuperação:</strong></label>
+<input required type="text" name="email_user" id="email_user">
+<label  for="senha_user"><strong>Senha:</strong></label>
+<input required type="text" name="senha_user" id="senha_user">
+<label  for="confirmar_senha_user">Confirmar <strong>Senha:</strong></label>
+<input required type="text" name="confirmar_senha_user" id="confirmar_senha_user">
+<label for="privilegio_user"><strong>Privilégio:</strong></label>
+<select type="text" name="privilegio_user" id="privilegio_user">
+<option value="0" selected hidden>---SELECIONAR---</option>    
+<option value="3">Administrador</option>    
+<option value="2">Funcionário</option>    
+</select>
+<div id="send_user_button_father">
+    <button id="send_user_button">
+        Salvar Conta
+    </button>
+</div>
+</form>
+  
+<section id="meus_dados_header">
+    <h4>Minhas Informações:</h4>
+    <div id="info_dados">
+        <div class="img_dados_father">
+            <i class="fa-solid fa-user"></i>
+        </div>
+        <div class="input_dados_father">
+            <label for="login_current_user">Usuário:</label>
+            <div class="input_style_father">
+                <input type="text" name="nome" id="login_current_user">
+                <i class="editar_info_current_user fa-solid fa-pen"></i>
+            </div>
+        </div>
+        <div class="input_dados_father">
+            <label for="senha_current_user">Senha:</label>
+            <div class="input_style_father">
+                <input  class="input_change_type_password" type="password" name="senha" id="senha_current_user">
+                <i class="editar_info_current_user fa-solid fa-pen"></i>
+            </div>
+        </div>
+        <div class="info_priv">
+            <span>Privilégio da Conta:</span>
+            <h4>Administrador</h4>
+        </div>
+    </div>
+</section>
+<% if(parseInt(attributes.permissao) == 3) { %>
+<section id="controle_contas">
+    <div id="header_controle_contas">
+        <h4>Controle de Contas:</h4>
+        <button onclick="abrirModal('modal_add_user');abrirModalUsuarios()">Criar Nova Conta</button>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Perfil</th>
+                <th>Usuário</th>
+                <th>E-mail Recuperação</th>
+                <th>Privilégio</th>
+                <th>Senha</th>
+                <th>Último Acesso</th>
+                <th>Processos Registrados</th>
+                <th>Editar</th>
+                <th>Excluir</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+</section>
+<% }%>
+<script src="./js/meusdados.js"></script>

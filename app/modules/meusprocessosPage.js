@@ -1,12 +1,16 @@
 const fs = require("fs")
 const path = require("path")
 class indexPage {
-  constructor(app, db) {
+  constructor(app, db,ctx) {
     this.app = app
     this.db = db
+    this.ctx = ctx
     this.iniciarPagina()
   }
   async attributes() {
+    var url = require('url');
+    var url_parts = url.parse(this.ctx.request.url, true);
+    var query = url_parts.query;
 
     let select_processos = await this.db.exec('SELECT `tb_processos`.*,tb_status.nome,tb_status.cor,tb_clientes.cnh,tb_clientes.nome as nome_cliente,tb_clientes.cpf FROM `tb_processos` INNER JOIN tb_status ON tb_status.id = tb_processos.status INNER JOIN tb_processos_relacionados ON tb_processos_relacionados.id_processo = tb_processos.id INNER JOIN tb_clientes on tb_processos_relacionados.id_cliente = tb_clientes.id GROUP BY tb_processos.id')
     let status = await this.db.exec('SELECT * FROM tb_status')
@@ -17,7 +21,9 @@ class indexPage {
       "processos": select_processos,
       "status": status,
       "metricas": metricas,
-      "processosMes": processosMes[0]
+      "processosMes": processosMes[0],
+      "id_cliente":query.cliente
+
 
     }
     return return_value
@@ -102,7 +108,7 @@ class indexPage {
       let nomeProcesso = ctx.request.body.nomeProcesso
       let files = ctx.request.files
       console.log(files)
-      let update_processo = await this.db.exec('UPDATE tb_processos SET status = ?, nome_processo = ?, placa_carro = ?, atualizacao = NOW() WHERE id = ? ', [status,nomeProcesso,"test",id_processo])
+      let update_processo = await this.db.exec('UPDATE tb_processos SET status = ?, nome_processo = ?, placa_carro = ?, atualizacao = NOW(),funcionario_id= ? WHERE id = ? ', [status,nomeProcesso,"test",this.ctx.cookies.get("id_cliente"),id_processo])
       let update_processo_relacionados = await this.db.exec('UPDATE tb_processos_relacionados SET id_cliente = ? WHERE id_processo = ?', [cliente_id,id_processo])
       let delete_imagens = await this.db.exec('DELETE FROM tb_imagens_processos WHERE id_processo = ? AND cliente_id = ?', [id_processo,cliente_id])
 
@@ -147,9 +153,10 @@ class indexPage {
       let status = ctx.request.body.status
       let nomeProcesso = ctx.request.body.nomeProcesso
       let placa = ctx.request.body.placa
+
       console.log(placa)
       let files = ctx.request.files
-      let insert_processo = await this.db.exec('INSERT INTO tb_processos (id, status, nome_processo,placa_carro,atualizacao,criacao) VALUES (NULL, ?, ?,?,NOW() ,NOW() );', [status,nomeProcesso,placa])
+      let insert_processo = await this.db.exec('INSERT INTO tb_processos (id, status, nome_processo,placa_carro,atualizacao,criacao,funcionario_id) VALUES (NULL, ?, ?,?,NOW() ,NOW(),? );', [status,nomeProcesso,placa,this.ctx.cookies.get("id_cliente")])
       let insert_processo_relacionados = await this.db.exec('INSERT INTO tb_processos_relacionados (id,id_cliente,id_processo) VALUES (NULL,?,?)', [cliente_id,insert_processo.insertId])
       Object.keys(files).forEach(element => {
         let file = files[element]

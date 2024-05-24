@@ -1,0 +1,44 @@
+<script src="./js/jquery.mask.js"></script>
+
+<div id="login_bg">
+
+<div class='box'>
+    <form id="login_user" class='box-form'>
+      <div class='box-login-tab'></div>
+      <div class='box-login-title'>
+        <div class='i i-login'></div><h2>LOGIN</h2>
+      </div>
+      <div class='box-login'>
+        <div class='fieldset-body' id='login_form'>
+          <button  type="button"onclick="openLoginInfo();" class='b b-form i ' title='Mais Informações'><i class="fa-solid fa-arrow-right-arrow-left"></i></button>
+              <p class='field'>
+            <label for='user'>USUÁRIO</label>
+            <input type='text' id='user' name='user' title='Username' />
+            <span id='valida' class='i i-warning'></span>
+          </p>
+              <p class='field'>
+            <label for='pass'>SENHA</label>
+            <input type='password' id='pass' name='pass' title='Password' />
+            <span id='valida' class='i i-close'></span>
+          </p>
+  
+  
+              <input type='submit' id='do_login' value='ENTRAR' title='ENTRAR' />
+        </div>
+      </div>
+    </form>
+    <div class='box-info'>
+                          <p><button onclick="closeLoginInfo();" class='b b-info i i-left' title='Back to Sign In'></button><h3>Dúvidas?</h3>
+      </p>
+                          <div class='line-wh'></div>
+                          <button onclick="" class='b-support' title='Esqueceu a Senha?'> Esqueceu a Senha?</button>
+      <button onclick="location.href='https://wa.me/5537984103402?text=Ol%C3%A1+estou+tendo+dificuldades+em+rela%C3%A7%C3%A3o+ao+uso+do+sistema+RVMultas%2C+pode+me+ajudar+%3F+'" class='b-support' title='Suporte'> Suporte</button>
+                          <div class='line-wh'></div>
+      <button  onclick="location.href='LoginCliente'" class='b-cta' title='É cliente ?'> É cliente ?</button>
+                    </div>
+  </div>
+  
+  
+   <div class='icon-credits'>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a>, <a href="http://www.flaticon.com/authors/budi-tanrim" title="Budi Tanrim">Budi Tanrim</a> & <a href="http://www.flaticon.com/authors/nice-and-serious" title="Nice and Serious">Nice and Serious</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+    <script src="./js/login.js"></script>
+</div>

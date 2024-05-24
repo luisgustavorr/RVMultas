@@ -156,15 +156,57 @@ function createProcessTable(obj_arg) {
   })
   $("#table_processos tbody").html(tbody)
 }
-createProcessTable(attr_obj.processos.filter(e => {
-  let data_atual = new Date()
-  let data_processo = new Date(e.criacao)
-  if (data_processo.getMonth() == data_atual.getMonth()) {
-    return true
-  } else {
-    return false
+
+var options = {
+  onKeyPress: function (cpfcnpj, e, field, options) {
+    if(cpfcnpj.match(/[A-z]/g) === null ){ 
+      console.log("qçkwl")
+      var masks = ['ZZZ.ZZZ.ZZZ-ZZZ', 'ZZ.ZZZ.ZZZ/ZZZZ-ZZZ'];
+      recursive = false
+      var mask = (cpfcnpj.length > 14) ? masks[1] : masks[0];
+      options["translation"] = {"Z":{
+        pattern: /[0-9]|[A-z]/g,recursive: false
+      }}
+    }else{
+      var mask ="Z"
+      options["translation"] = {"Z":{
+        pattern: /[0-9]|[A-z]/g,recursive: true
+      }}
+    }
+    console.log()
+    $('#buscar_cliente_processos').mask(mask, options);
+  },
+  translation: {
+    'Z': {
+      pattern: /[0-9]|[A-z]/g,recursive: true
+    }
   }
-}))
+};
+$("#buscar_cliente_processos").mask('Z', options);
+$("#buscar_cliente_processos").keyup(function(){
+console.log($(this).cleanVal().match(/[A-z]/g) === null)
+if($(this).cleanVal().match(/[A-z]/g) === null){
+
+processos_filtrados =buscar($(this), attr_obj.processos, "cpf")
+createProcessTable(processos_filtrados)
+console.log(attr_obj.processos)
+}else{
+console.log("nome")
+
+processos_filtrados =buscar($(this), attr_obj.processos, "nome_cliente")
+createProcessTable(processos_filtrados)
+}
+})
+// .filter(e => {
+//   let data_atual = new Date()
+//   let data_processo = new Date(e.criacao)
+//   if (data_processo.getMonth() == data_atual.getMonth()) {
+//     return true
+//   } else {
+//     return false
+//   }
+// })
+createProcessTable(attr_obj.processos)
 $("#buscar_processos").change(function () {
   processos_filtrados = buscar($(this), attr_obj.processos, "nome_processo")
   createProcessTable(processos_filtrados)
@@ -204,8 +246,11 @@ function alterarEstadoImagens(element, ativar) {
     $(elementoAlvo).children().css("color", "white")
     $(elementoAlvo).children().css("cursor", "pointer")
     $(elementoAlvo).children().attr("remover_ao_clicar", "1")
+    $(elementoAlvo).find("img").attr("sem_zoom",true)
   } else {
     let elementoAlvo = $("#" + $(element).attr("files_father"))
+    $(elementoAlvo).find("img").removeAttr("sem_zoom")
+
     $(elementoAlvo).children().css("background", "#d2d2d2")
     $(elementoAlvo).children().css("color", "#444")
     $(elementoAlvo).children().css("cursor", "auto")

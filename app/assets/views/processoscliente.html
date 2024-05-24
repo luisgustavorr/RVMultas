@@ -1,9 +1,28 @@
-
 <link
-  rel="stylesheet"
-  href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css"
+rel="stylesheet"
+href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css"
 />
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<div class="modal" id="assinatura_father">
+  <div class="close_modal_father">
+    <i onclick="fecharModal()" class="fa-solid fa-xmark"></i>
+  </div>
+  <canvas id="sketchpad"></canvas>
+  <div id="buttons_father_assinar">
+    <button onclick="sketchpad.undo();">Desfazer</button>
+
+    <button onclick="canvasToFile()">Assinar</button>
+  </div>
+
+</div>
+
+<div class="modal" id="processosolicitado">
+  <h3>Processo Soliciado <yellow>com Sucesso!</yellow></h3>
+  <p>Sua solicitação foi enviada para nossa equipe,
+    e estaremos analisando sua situação e entraremos
+    em contato o mais rápido possível!</p>
+  <button onclick="fecharModal()">Aguardar Contato</button>
+</div>
 <form class="modal" id="modal_add_status">
   <input type="hidden" value="0" id="id_status">
 <div id="left_side">
@@ -49,7 +68,7 @@
   <input type="hidden" name="" id="id_cliente_selecionado" />
 
   <div class="left_side_form">
-    <h5 onclick="location.href='MeusProcessos'">< Voltar para Listagem de Processos.</h5>
+    <h5 onclick="location.href='ProcessosCliente'">< Voltar para Listagem de Processos.</h5>
     <h2>Cadastrar Processo:</h2>
     <div class="input_father">
       <label for="nome_processo_add">Nome Processo:</label>
@@ -89,8 +108,8 @@
 
           <div class="inputs_files">
             <label for="fotos_crlv"
-              ><i class="fa-solid fa-table-cells"></i> Enviar Fotos</label
-            >
+              >
+            
             <input
               files_father="crlv_files"
               type="file"
@@ -102,7 +121,7 @@
               id="remover_fotos_crlv"
               class="remover_fotos"
               files_father="crlv_files"
-              ><i class="fa-solid fa-trash-can"></i> Excluir Fotos Enviadas
+              >
             </span>
           </div>
         </div>
@@ -114,8 +133,8 @@
 
           <div class="inputs_files">
             <label for="notificacao_atuacao_input"
-              ><i class="fa-solid fa-table-cells"></i> Enviar Fotos</label
-            >
+              >
+            
             <input
               files_father="notificacao_atuacao"
               type="file"
@@ -127,7 +146,7 @@
               id="remover_fotos_notificacao_atuacao"
               class="remover_fotos"
               files_father="notificacao_atuacao"
-              ><i class="fa-solid fa-trash-can"></i> Excluir Fotos Enviadas
+              >
             </span>
           </div>
         </div>
@@ -139,8 +158,8 @@
 
           <div class="inputs_files">
             <label for="outros_documentos_input"
-              ><i class="fa-solid fa-table-cells"></i> Enviar Fotos</label
-            >
+              >
+            
             <input
               files_father="outros_documentos"
               type="file"
@@ -152,7 +171,7 @@
               id="remover_fotos_outros_documentos"
               class="remover_fotos"
               files_father="outros_documentos"
-              ><i class="fa-solid fa-trash-can"></i> Excluir Fotos Enviadas
+              >
             </span>
           </div>
         </div>
@@ -184,80 +203,79 @@
   </div>
 </form>
 <div class="header_options_page">
-  <div id="metricas_processos" class="header_options_parent"></div>
-  <div class="header_options_parent">
+    <div class="header_options_parent">
+      <h3>Métricas Processos:</h3>
+      <span>Processos Solicitados: <red>15 Processos</red></span>
+      <span>Último Status enviado: <red>Em JARI</red></span>
+    </div>
+    <div class="header_options_parent">
+      <label for="">Buscar Processo:</label>
+  
+      <div class="input_search_father">
+        <input
+        placeholder="Digite o nome do processo..."
+          type="text"
+          name="buscar_clientes_processos"
+          id="buscar_clientes_processos"
+        />
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </div>
+    </div>
+    <div class="header_options_parent">
+      <button onclick=" confirmarSolicitarProcesso()">Solicitar Processo</button>
+    </div>
+  </div>
+  <form class="modal" id="modal_adicionar_processo_cliente">
+    <h3>Adicionar <strong>Novo Processo:</strong></h3>
+    <div class="input_father_duo">
+  
+    <div class="input_father_single width_70">
+      <label for="nome_cliente">Nome do Cliente:</label>
+      <input type="text" name="nome_cliente" id="nome_cliente">
+    </div>
+    <div class="input_father_single width_28">
+      <label for="cnh_cliente">CNH:</label>
+      <input type="text" name="cnh_cliente" id="cnh_cliente">
+    </div>
+    </div>
+    <div class="input_father_duo">
+      <div class="input_father_single width_28">
+        <label for="tel_cliente">Telefone:</label>
+        <input type="text" name="tel_cliente" id="tel_cliente">
+      </div>
+      <div class="input_father_single width_70">
+        <label for="email_cliente ">Email:</label>
+        <input type="text" name="email_cliente" id="email_cliente">
+      </div>
+    </div>
+    <div class="input_father_duo">
+      <div class="input_father_single">
+        <label for="cpf_cliente">CPF ou CNPJ:</label>
+        <input type="text" name="cpf_cliente" id="cpf_cliente">
+      </div>
+      <div class="input_father_single">
+        <label for="vencimento_cliente">Vencimento CNH:</label>
+        <input type="text" name="vencimento_cliente" id="vencimento_cliente">
+      </div>
+    </div>
+    <div class="images_father">
+      <div class="header_images">
+      
+      <label >Fotos de Documentos:<br><span>* Adicione fotos legíveis com frente e verso.</span> </label>
+        <label id="label_input_files" for="fotos_documentos">Adicionar Documento</label>
+        <input  accept="image/*" type="file" name="fotos_documentos" multiple id="fotos_documentos">
+      </div>
+      <div id="images_clientes_father">
+      
+      </div>
+    </div>
+    <div id="button_father_add_cliente">
+      <button>Salvar Cliente</button>
+    </div>
 
-    <div class="input_search_processo">
+  </form>
+  <section id="cards_father">
 
-    <label for="">Buscar Processo:</label>
 
-    <div class="input_search_father">
-      <input type="text" name="buscar_processos" id="buscar_processos" />
-      <i class="fa-solid fa-magnifying-glass"></i>
-    </div>
-  </div>
-  <div class="input_search_processo">
-    <label for="">Nome/Documento Cliente:</label>
-    <div class="input_search_father">
-      <input type="text" name="buscar_cliente_processos" id="buscar_cliente_processos" />
-      <i class="fa-solid fa-magnifying-glass"></i>
-    </div>
-  </div>
-  </div>
-  <div class="header_options_parent">
- 
-  <button onclick="abrirModal('modal_add_processo'); $('#editando_processo').val(false)">Adicionar Processo</button>
-  </div>
-</div>
-<section id="table_processos">
-  <div class="title_father">
-
-    <h2>Processos <strong></strong></h2>
-    <span
-    onclick="abrirModal('modal_add_status')"
-      ><i class="fa-solid fa-envelope-open-text"></i> Definir Mensagens e
-      Status</span
-    >
-  </div>
-  <div class="options_table_processos">
-    <div class="option_fahter">
-      <i class="fa-solid fa-calendar-days"></i>
-      <span
-        >Mês Selecionado: <br />
-        <strong>   <select name="selectMeses" id="selectMeses"> </select></strong></span
-      >
-    </div>
-    <div class="option_fahter">
-      <i class="fa-solid fa-bars-staggered"></i
-      ><span
-        >Ordenar Por: <br />
-        <strong id="order_by_text">Data de Criação</strong></span
-      >
-    </div>
-    <!-- <div class="option_fahter">
-      <i class="fa-solid fa-file-lines"></i
-      ><strong>Gerar Relatório Geral</strong>
-    </div>
-    <div class="option_fahter">
-      <i class="fa-solid fa-file-lines"></i
-      ><strong>Gerar Relatório Por Processo</strong>
-    </div> -->
-  </div>
-  <table>
-    <thead>
-      <tr>
-        <td class="order" id="ordenar_processo_name" ordem = "1">Processo</td>
-        <td>Status</td>
-        <td class="order" id="ordenar_processo_cliente"  ordem = "1">Cliente</td>
-        <td>Documento</td>
-        <td>CNH</td>
-        <td>Placa</td>
-        <td class="order" id="ordenar_processo_atualizacao"  ordem = "1">Atualização</td>
-        <td class="order" id="ordenar_processo_criacao"  ordem = "1">Criação</td>
-        <td>Notificar</td>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-</section>
-<script src="./js/meusprocessos.js"></script>
+  </section>
+<script src="./js/processoscliente.js"></script>
