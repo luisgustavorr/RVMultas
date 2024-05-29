@@ -1,5 +1,7 @@
 let attr_obj = JSON.parse(attributes.value)
 let attr_obj_users = JSON.parse(attributes.value).usuarios
+var id_cliente_global =JSON.parse(attributes.value).id_cliente
+
 console.log(attr_obj)
 let arrayPermissoes = {
   2: "Funcionário",
@@ -7,7 +9,7 @@ let arrayPermissoes = {
 }
 function abrirModalUsuarios() {
   $('#modal_add_user').find('input').val('')
-  $('#modal_add_user h3').html('Criar<strong>Nova Conta</strong>');
+  $('#modal_add_user h3').html('Criar <strong>Nova Conta</strong>');
   $('#modal_add_user').find('select').val('0');
   $("#id_user_editando").val("0")
 

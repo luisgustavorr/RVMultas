@@ -1,0 +1,23 @@
+<div class="modal" id="assinatura_father">
+    <div class="close_modal_father">
+      <!-- <i onclick="fecharModal()" class="fa-solid fa-xmark"></i> -->
+      <h3>Desenhe sua rubrica abaixo </h3>
+    </div>
+    <canvas id="sketchpad"></canvas>
+    <div id="buttons_father_assinar">
+      <button onclick="sketchpad.undo();">Desfazer</button>
+  
+      <button onclick="canvasToFile()">Assinar</button>
+    </div>
+  
+  </div>
+<section id="assinar_pdf_father">
+  
+        <embed frameBorder="0"id="pdf_father" src="<%=attributes.contrato.caminho%>#toolbar=0" />
+
+    <div id="options_father">
+        <button onclick="gerarQRCode('Escaneie o QRCode para assinar desenhando pelo celular!',window.location.href)"><i class="fa-solid fa-qrcode"></i> Assinar Pelo Celular</button>
+        <button onclick="assinarContratoDigitando()"><i class="fa-regular fa-keyboard"></i> Digitar Assinatura</button>
+    </div>
+</section>
+<script src="./js/assinarcontrato.js"></script>

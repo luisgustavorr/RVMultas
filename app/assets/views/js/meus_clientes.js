@@ -1,4 +1,6 @@
 console.log(attributes)
+var id_cliente_global =JSON.parse(attributes.value).id_cliente
+
 let files_uploaded = []
 function resetInsertCliente(){
   files_uploaded = []
@@ -6,6 +8,7 @@ function resetInsertCliente(){
   $("#images_clientes_father").html("")
 }
 let attr_obj = JSON.parse(attributes.value).clientes
+$("#metrica_cliente red").text(JSON.parse(attributes.value).metricas[0]["quantidade"]+" Clientes")
 function createCards(array, status = null) {
   let new_array = array
   // if (status != null) {

@@ -18,7 +18,7 @@ class indexPage {
   }
   
   async insertFuncionario() {
-    this.app.post("/MeusDados/insertFuncionario", async ctx => {
+    this.app.post(process.env.ROOT+"/MeusDados/insertFuncionario", async ctx => {
 
       let nome = ctx.request.body.nome
       let senha = ctx.request.body.senha
@@ -30,7 +30,7 @@ class indexPage {
     })
   }
   async updateFuncionario() {
-    this.app.post("/MeusDados/updateFuncionario", async ctx => {
+    this.app.post(process.env.ROOT+"/MeusDados/updateFuncionario", async ctx => {
 
       let nome = ctx.request.body.nome
       let senha = ctx.request.body.senha
@@ -43,7 +43,7 @@ class indexPage {
     })
   }
   async changeNameOrEmail(){
-    this.app.post("/MeusDados/changeNameOrEmail", async ctx => {
+    this.app.post(process.env.ROOT+"/MeusDados/changeNameOrEmail", async ctx => {
       let column = ctx.request.body.column
       let value = ctx.request.body.value
       let result = await this.db.exec('UPDATE tb_usuarios SET '+column+' = ? WHERE tb_usuarios.id = ?;', [value,parseInt( this.ctx.cookies.get("id_cliente"))])

@@ -1,4 +1,5 @@
 let attr_obj = JSON.parse(attributes.value)
+var id_cliente_global = JSON.parse(attributes.value).id_cliente
 let attr_clientes = attr_obj.data_clientes
 let obj_emissoes = []
 attr_obj = attr_obj.data_contarato
@@ -14,12 +15,13 @@ function createTableRow(array) {
     <td> ${e.nome_cliente}</td>
     <td>  ${formatarData(e.data_emissao)}</td>
     <td> ${data_assinatura}</td>
-    <td><i id_cliente = "${e.id_cliente}" id_contrato="${e.id_contrato}" class="gerarPDF fa-solid fa-file-pdf"></i></td>
+    <td><i onClick="location.href= '/uploads/contratos/cliente_${e.id_cliente}/contrato_${e.id_contrato}/${e.nome}_${e.nome_cliente}.pdf'" class="gerarPDF fa-solid fa-file-pdf"></i></td>
   </tr>
     `)
   })
 }
 function createCards(array, status = null) {
+  console.log("a")
   let new_array = array
   // if (status != null) {
   //     new_array = array.filter((obj) => obj.status == status)
@@ -53,7 +55,7 @@ function createCards(array, status = null) {
     </div>`)
   });
 }
-
+createCards(attr_obj)
 function moveTooltip(x, y) {
   $("#tooltip_contrato").css("left", x + "px")
   $("#tooltip_contrato").css("top", y + "px")
@@ -122,9 +124,16 @@ $("#modal_add_contrato").submit(function (e) {
 
 $(".variaveis_contrato_buttons button").click(function () {
   let variavel = $(this).text()
+  const range = quill.getSelection(true);
+
+  if(variavel == "{Assinatura}"){
+    quill.insertEmbed(range.index, 'image', 'http://localhost:3000/images/signature.png');
+    $(".ql-editor").find("[src='http://localhost:3000/images/signature.png]").attr("id","assintatura_placeholder")
+    return
+  }
   if ($("#editor .ql-editor p:last-child").children())
     console.log()
-  quill.insertText(quill.getSelection(), variavel)
+  quill.insertText(range.index,variavel)
 })
 
 $("#editar_contrato").click(function () {
@@ -166,13 +175,30 @@ $("#modal_realizar_emissao").submit(function (e) {
   e.preventDefault()
   let id_cliente = $("#id_cliente_emissao").val()
   let id_contrato = $("#id_contrato_emissao").val()
+  let cliente = attr_clientes.filter(e=> e.id == id_cliente)[0]
   let data = {
     id_cliente,
     id_contrato
   }
-  $.post("/Contratos/insertContratoRelacionado", data, (ret) => {
-    console.log(ret)
-    location.reload()
+  
+  $.post("/Contratos/insertContratoRelacionado", data, async (ret) => {
+    let contrato = attr_obj.filter((element) => element.id == id_contrato)[0]
+    let caminho = `uploads/contratos/cliente_${id_cliente}/contrato_${id_contrato}/${contrato.nome}_${cliente.nome}.pdf`
+    console.log(caminho)
+    let data = {
+      htmlAlvo: await addVariablesContrato(contrato.text),
+      nomeContrato: contrato.nome,
+      idContrato :id_contrato,
+      idCliente :id_cliente
+    }
+    console.log(data)
+    $.post("/Contratos/generatePDF", data, (ret) => {
+      console.log(ret)
+      let data = new Date()
+      createCards(attr_obj)
+      enviarMensagemModal(`Olá ${cliente.nome}, segue o contrato emitido para você no dia e horário: ${formatarDatetime(data)}`, formatarNumero(cliente.tel),caminho) 
+    })
+
   })
 })
 console.log(attr_clientes)

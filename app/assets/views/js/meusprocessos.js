@@ -2,8 +2,9 @@ let attr_obj = JSON.parse(attributes.value)
 let files_uploaded = []
 let clientes = []
 let processos_filtrados = attr_obj.processos
-console.log(attr_obj.processos)
-console.log(attr_obj)
+var id_cliente_global = JSON.parse(attributes.value).id_cliente
+
+
 function createStatusButton(array) {
   $(".status_father").html("")
   array.forEach(function (e) {
@@ -129,9 +130,17 @@ function gerarStatusOptions(id_status) {
 
   return options
 }
-function createProcessTable(obj_arg) {
+function changeTextarea(e, texto, index) {
+  console.log(texto)
+  let text = $(e).val()
+  console.log(text.substr(0, index))
+  return text.substr(0, index) + texto + text.substr(index, text.length)
+}
+async function createProcessTable(obj_arg) {
   let tbody = ""
   obj_arg.forEach(element => {
+    console.log(element)
+
     let row = `
     <tr>
       <td ><span id_processo="${element.id}" class="editar_processo">${element.nome_processo}</span></td>
@@ -149,53 +158,58 @@ function createProcessTable(obj_arg) {
       <td>${element.placa_carro}</td>
       <td>${formatarData(element.atualizacao)}</td>
       <td>${formatarData(element.criacao)}</td>
-      <td><i class="fa-brands fa-whatsapp"></i></td>
+      <td><i onClick="enviarMensagemModal('${element.mensagem.replace(/{Nome_do_Cliente}/g, element.nome_cliente).replace(/"/g, "``").replace(/'/g, "`").replace(/{Status}/g, element.nome).replace(/{Processo}/g, element.nome_processo)}','${formatarNumero(element.tel)}')" class=" fa-brands fa-whatsapp"></i></td>
       
     </tr>`
     tbody += row
   })
   $("#table_processos tbody").html(tbody)
+  return 200
 }
 
 var options = {
   onKeyPress: function (cpfcnpj, e, field, options) {
-    if(cpfcnpj.match(/[A-z]/g) === null ){ 
+    if (cpfcnpj.match(/[A-z]/g) === null) {
       console.log("qçkwl")
       var masks = ['ZZZ.ZZZ.ZZZ-ZZZ', 'ZZ.ZZZ.ZZZ/ZZZZ-ZZZ'];
       recursive = false
       var mask = (cpfcnpj.length > 14) ? masks[1] : masks[0];
-      options["translation"] = {"Z":{
-        pattern: /[0-9]|[A-z]/g,recursive: false
-      }}
-    }else{
-      var mask ="Z"
-      options["translation"] = {"Z":{
-        pattern: /[0-9]|[A-z]/g,recursive: true
-      }}
+      options["translation"] = {
+        "Z": {
+          pattern: /[0-9]|[A-z]/g, recursive: false
+        }
+      }
+    } else {
+      var mask = "Z"
+      options["translation"] = {
+        "Z": {
+          pattern: /[0-9]|[A-z]/g, recursive: true
+        }
+      }
     }
     console.log()
     $('#buscar_cliente_processos').mask(mask, options);
   },
   translation: {
     'Z': {
-      pattern: /[0-9]|[A-z]/g,recursive: true
+      pattern: /[0-9]|[A-z]/g, recursive: true
     }
   }
 };
 $("#buscar_cliente_processos").mask('Z', options);
-$("#buscar_cliente_processos").keyup(function(){
-console.log($(this).cleanVal().match(/[A-z]/g) === null)
-if($(this).cleanVal().match(/[A-z]/g) === null){
+$("#buscar_cliente_processos").keyup(function () {
+  console.log($(this).cleanVal().match(/[A-z]/g) === null)
+  if ($(this).cleanVal().match(/[A-z]/g) === null) {
 
-processos_filtrados =buscar($(this), attr_obj.processos, "cpf")
-createProcessTable(processos_filtrados)
-console.log(attr_obj.processos)
-}else{
-console.log("nome")
+    processos_filtrados = buscar($(this), attr_obj.processos, "cpf")
+    createProcessTable(processos_filtrados)
+    console.log(attr_obj.processos)
+  } else {
+    console.log("nome")
 
-processos_filtrados =buscar($(this), attr_obj.processos, "nome_cliente")
-createProcessTable(processos_filtrados)
-}
+    processos_filtrados = buscar($(this), attr_obj.processos, "nome_cliente")
+    createProcessTable(processos_filtrados)
+  }
 })
 // .filter(e => {
 //   let data_atual = new Date()
@@ -217,7 +231,7 @@ $("#table_processos").on("change", ".status", function () {
     status: $(this).val()
   }
   console.log(data)
-  $.post("/MeusProcessos/updateStatus", data, (ret) => {
+  $.post("/MeusProcessos/updateStatus", data, async (ret) => {
     console.log(ret)
     attr_obj = JSON.parse(ret.newObject)
     processos_filtrados = buscar($("#buscar_processos"), attr_obj.processos, "nome_processo").filter(e => {
@@ -233,8 +247,12 @@ $("#table_processos").on("change", ".status", function () {
         return true
       }
     })
-    createProcessTable(processos_filtrados)   
-     gerarMetricas(attr_obj)
+    await createProcessTable(processos_filtrados)
+    await gerarMetricas(attr_obj)
+    setTimeout(()=>{
+      $(".status[id_processo='"+$(this).attr("id_processo")+"']").parent().parent().find("i").click()
+
+    },500)
 
 
   })
@@ -246,7 +264,7 @@ function alterarEstadoImagens(element, ativar) {
     $(elementoAlvo).children().css("color", "white")
     $(elementoAlvo).children().css("cursor", "pointer")
     $(elementoAlvo).children().attr("remover_ao_clicar", "1")
-    $(elementoAlvo).find("img").attr("sem_zoom",true)
+    $(elementoAlvo).find("img").attr("sem_zoom", true)
   } else {
     let elementoAlvo = $("#" + $(element).attr("files_father"))
     $(elementoAlvo).find("img").removeAttr("sem_zoom")
@@ -325,6 +343,7 @@ $("#status_processo_criado").on("click", "option", function () {
 $("#status_processo_criado").attr("style", $("#status_processo_criado").find("option").attr("style"))
 
 function loadClientImages(array) {
+  $(".info_cliente_father .imagens_father").html("")
   let jsonArray = JSON.parse(array)
   console.log(jsonArray)
   jsonArray.forEach(element => {
@@ -575,7 +594,7 @@ $("#ordenar_processo_name").click(async function () {
 function inverterTabela(elemento) {
   $("#table_processos table thead tr td i").remove()
   $("#order_by_text").text($(elemento).text())
-  
+
   if ($(elemento).attr("ordem") == "1") {
     $(elemento).attr("ordem", 0)
     $(elemento).html('<i class="fa-solid fa-chevron-up"></i>' + $(elemento).text())
@@ -633,7 +652,7 @@ $("#modal_add_status .status_father").on("click", "button", function (e) {
   let status = attr_obj.status.filter(e => e.id == $(this).attr("id_status"))[0]
   console.log(status)
   $("#delete_status").parent().html('  <i id="delete_status_pre" class="fa-regular fa-trash-can"></i> ')
-  $("#delete_status").attr("id","delete_status_pre")
+  $("#delete_status").attr("id", "delete_status_pre")
 
   $("#id_status").val(status.id)
   $("#nome_status").val(status.nome)
@@ -646,7 +665,7 @@ $("#modal_add_status #left_side span").click(function (e) {
   $("#modal_add_status input[type='color']").val("#000000")
   $("#id_status").val(0)
   $("#delete_status").parent().html('  <i id="delete_status_pre" class="fa-regular fa-trash-can"></i> ')
-  $("#delete_status").attr("id","delete_status_pre")
+  $("#delete_status").attr("id", "delete_status_pre")
 
   $("#modal_add_status textarea").val("")
 
@@ -680,28 +699,37 @@ $("#modal_add_status").submit(function (e) {
         return true
       }
     })
-    createProcessTable(processos_filtrados)   
+    createProcessTable(processos_filtrados)
 
   })
+})
+let indexTextarea = 0
+$("#mensagem_status").keyup(function () {
+  indexTextarea = $(this).prop("selectionStart")
+})
+$("#mensagem_status").click(function () {
+  indexTextarea = $(this).prop("selectionStart")
 })
 $(".buttons_variables button").click(function () {
   let variable = "{" + $(this).text().replace(/ /g, "_") + "}"
   console.log(variable)
-  $("#mensagem_status").val($("#mensagem_status").val() + " " + variable + " ")
+  $("#mensagem_status").val(changeTextarea($("#mensagem_status"), variable, indexTextarea))
+  $("#mensagem_status").focus()
+  $("#mensagem_status")[0].selectionEnd = parseInt(indexTextarea) + parseInt(variable.length)
 })
 let data_atual = new Date()
 let mesAtual = data_atual.getMonth() + 1
 let anoAtual = data_atual.getFullYear()
 $("#selectMeses").val(anoAtual + "_" + mesAtual.toString().padStart(2, '0'))
-$("body").on("click","#delete_status_pre",function(){
-  $(this).attr("id","delete_status")
+$("body").on("click", "#delete_status_pre", function () {
+  $(this).attr("id", "delete_status")
   $(this).parent().html(" Clique na lixeira para confirmar :" + $(this).parent().html())
 })
-$("body").on("click","#delete_status",function(){
+$("body").on("click", "#delete_status", function () {
   let data = {
-    id_status :  $("#id_status").val()
+    id_status: $("#id_status").val()
   }
-  $.post("/MeusProcessos/deleteStatus",data,function(ret){
+  $.post("/MeusProcessos/deleteStatus", data, function (ret) {
     $("#modal_add_status #left_side span").click()
 
     console.log(ret)
@@ -720,6 +748,6 @@ $("body").on("click","#delete_status",function(){
         return true
       }
     })
-    createProcessTable(processos_filtrados)  
+    createProcessTable(processos_filtrados)
   })
 })

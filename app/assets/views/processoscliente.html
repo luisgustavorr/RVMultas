@@ -3,18 +3,7 @@ rel="stylesheet"
 href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css"
 />
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-<div class="modal" id="assinatura_father">
-  <div class="close_modal_father">
-    <i onclick="fecharModal()" class="fa-solid fa-xmark"></i>
-  </div>
-  <canvas id="sketchpad"></canvas>
-  <div id="buttons_father_assinar">
-    <button onclick="sketchpad.undo();">Desfazer</button>
 
-    <button onclick="canvasToFile()">Assinar</button>
-  </div>
-
-</div>
 
 <div class="modal" id="processosolicitado">
   <h3>Processo Soliciado <yellow>com Sucesso!</yellow></h3>
@@ -23,56 +12,17 @@ href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css"
     em contato o mais rápido possível!</p>
   <button onclick="fecharModal()">Aguardar Contato</button>
 </div>
-<form class="modal" id="modal_add_status">
-  <input type="hidden" value="0" id="id_status">
-<div id="left_side">
-  <div class="up_side">
-    <h2>Status de Processo:</h2>
-    <div class="status_father">
-    <button>Deferido <i class="fa-solid fa-angle-right"></i></button>
-    </div>
-  </div>
 
-<span>Criar Novo Status</span>
-</div>
-<div id="right_side">
-  <div class="icon_trash">
-    <i id="delete_status_pre" class="fa-regular fa-trash-can"></i>
-  </div>
-  <div class="input_father_double">
-    <div class="input_father">
-      <label for="nome_status">Node do Status:</label>
-      <input type="text" name="nome_status" id="nome_status">
-    </div>
-    <div class="input_color_father">
-      <span for="cor_status">Cor Status:</span>
-      <label for="cor_status"></label>
-      <input type="color" name="cor_status" id="cor_status">
-    </div>
-  </div>
-  <h2>Mensagem do Status:</h2>
-  <span>Variáveis:</span>
-  <div class="buttons_variables">
-    <button type="button">Nome do Cliente</button>
-    <button type="button">Processo</button>
-    <button type="button">Status</button>
-  </div>
-  <textarea name="mensagem_status" id="mensagem_status" cols="30" rows="10"></textarea>
-  <div class="button_father">
-    <button>Salvar Status</button>
-  </div>
-</div>
-</form>
 <form class="modal" id="modal_add_processo" action="">
-  <input type="hidden" id="editando_processo" id_processo="">
-  <input type="hidden" name="" id="id_cliente_selecionado" />
+  <input disabled type="hidden" id="editando_processo" id_processo="">
+  <input disabled type="hidden" name="" id="id_cliente_selecionado" />
 
   <div class="left_side_form">
     <h5 onclick="location.href='ProcessosCliente'">< Voltar para Listagem de Processos.</h5>
-    <h2>Cadastrar Processo:</h2>
+    <h2>Informações Processo:</h2>
     <div class="input_father">
       <label for="nome_processo_add">Nome Processo:</label>
-      <input
+      <input disabled
         type="text"
         name="nome_processo_add"
         id="nome_processo_add"
@@ -81,8 +31,8 @@ href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css"
     </div>
     <div class="double_input_father">
       <div class="input_father">
-        <label for="nome_processo_add">Placa do Veículo:</label>
-        <input
+        <label for="nome_processo_add">Veículo:</label>
+        <input disabled
           type="text"
           name="placa_processo"
           id="placa_processo"
@@ -90,8 +40,8 @@ href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css"
         />
       </div>
       <div class="input_father">
-        <label for="select_cliente">Selecione o Cliente:</label>
-        <input
+        <label for="select_cliente">Cliente:</label>
+        <input disabled
           type="text"
           name="select_cliente"
           id="select_cliente"
@@ -110,7 +60,7 @@ href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css"
             <label for="fotos_crlv"
               >
             
-            <input
+            <input disabled
               files_father="crlv_files"
               type="file"
               name="fotos_crlv"
@@ -135,7 +85,7 @@ href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css"
             <label for="notificacao_atuacao_input"
               >
             
-            <input
+            <input disabled
               files_father="notificacao_atuacao"
               type="file"
               name="notificacao_atuacao_input"
@@ -160,7 +110,7 @@ href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css"
             <label for="outros_documentos_input"
               >
             
-            <input
+            <input disabled
               files_father="outros_documentos"
               type="file"
               name="outros_documentos_input"
@@ -199,20 +149,19 @@ href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css"
     >
     <span class="edit_info">Data Criação: <strong class="data_criacao">03/04/2024 09h36</strong></span>
     <span  class="edit_info">Ult. Atualização: <strong  class="ult_atualizacao">03/04/2024 09h36</strong></span>
-    <button>Salvar Processo</button>
   </div>
 </form>
 <div class="header_options_page">
     <div class="header_options_parent">
       <h3>Métricas Processos:</h3>
-      <span>Processos Solicitados: <red>15 Processos</red></span>
-      <span>Último Status enviado: <red>Em JARI</red></span>
+      <span>Processos Solicitados: <red><%= attributes.metricas.quantidade %> Processo(s)</red></span>
+      <span>Último Status enviado: <red><%= attributes.metricas.status%></red></span>
     </div>
     <div class="header_options_parent">
       <label for="">Buscar Processo:</label>
   
       <div class="input_search_father">
-        <input
+        <input disabled
         placeholder="Digite o nome do processo..."
           type="text"
           name="buscar_clientes_processos"
@@ -231,17 +180,17 @@ href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css"
   
     <div class="input_father_single width_70">
       <label for="nome_cliente">Nome do Cliente:</label>
-      <input type="text" name="nome_cliente" id="nome_cliente">
+      <input disabled type="text" name="nome_cliente" id="nome_cliente">
     </div>
     <div class="input_father_single width_28">
       <label for="cnh_cliente">CNH:</label>
-      <input type="text" name="cnh_cliente" id="cnh_cliente">
+      <input disabled type="text" name="cnh_cliente" id="cnh_cliente">
     </div>
     </div>
     <div class="input_father_duo">
       <div class="input_father_single width_28">
         <label for="tel_cliente">Telefone:</label>
-        <input type="text" name="tel_cliente" id="tel_cliente">
+        <input disabled type="text" name="tel_cliente" id="tel_cliente">
       </div>
       <div class="input_father_single width_70">
         <label for="email_cliente ">Email:</label>

@@ -12,7 +12,7 @@ class indexPage {
     var url_parts = url.parse(this.ctx.request.url, true);
     var query = url_parts.query;
 
-    let metricas = await this.db.exec('SELECT COUNT(tb_processos.id) as quantidade,tb_status.nome  as status FROM tb_processos INNER JOIN tb_status ON tb_status.id = tb_processos.status WHERE MONTH(CURRENT_DATE) = MONTH(tb_processos.criacao)  GROUP BY tb_processos.status   ORDER BY COUNT(tb_processos.id) DESC LIMIT 2;')
+    let metricas = await this.db.exec('SELECT COUNT(id) as quantidade FROM `tb_clientes`  WHERE MONTH(now()) = MONTH(data_cadastro);;')
 
     let result = await this.db.exec("SELECT tb_clientes.id,tb_clientes.vencimento_cnh as vencimento_cnh,tb_clientes.nome,tb_clientes.cnh,COUNT(tb_processos_relacionados.id) as numero_processos FROM `tb_clientes` LEFT JOIN tb_processos_relacionados ON tb_processos_relacionados.id_cliente = tb_clientes.id GROUP BY tb_clientes.id;")
     let return_value = {
@@ -24,7 +24,7 @@ class indexPage {
     return return_value
   }
   async selectCliente() {
-    this.app.post("/MeusClientes/selectCliente", async ctx => {
+    this.app.post(process.env.ROOT+"/MeusClientes/selectCliente", async ctx => {
 
     let idCliente = ctx.request.body.idCliente
 
@@ -35,7 +35,7 @@ class indexPage {
     })
   }
   async insertCliente() {
-    this.app.post("/MeusClientes/insertCliente", async ctx => {
+    this.app.post(process.env.ROOT+"/MeusClientes/insertCliente", async ctx => {
 
       let files = ctx.request.files
       console.log(files)
@@ -79,7 +79,7 @@ class indexPage {
     })
   }
   async updateCliente() {
-    this.app.post("/MeusClientes/updateCliente", async ctx => {
+    this.app.post(process.env.ROOT+"/MeusClientes/updateCliente", async ctx => {
 
       let files = ctx.request.files
       console.log(files)

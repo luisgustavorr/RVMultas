@@ -13,6 +13,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
 
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
   <link
     href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
     rel="stylesheet" />
@@ -21,11 +23,15 @@
 </head>
 
 <body>
+
   <div id="notifications_body">
 
   </div>
   <% if(attributes.permissao>=2){
     %>
+    <div title="Pressione F1 para fazer esse botão aparecer/sumir." id="conectarWhatsapp">
+      <i class="fa-brands fa-whatsapp"></i> Conectar Whatsapp
+    </div>
     <aside id="sidebar">
       <a href="MeusClientes" id="meusclientes"><i class="fa-solid fa-users"></i> Meus Clientes</a>
       <a href="MeusProcessos" id="meusprocessos"><i class="fa-solid fa-folder"></i> Meus Processos</a>
@@ -55,19 +61,25 @@
           <!-- Aqui será renderizado o conteúdo específico de cada página -->
           <input type="hidden" id="attributes" value="<%=JSON.stringify(attributes)%>" disabled />
           <script src="./js/jquery.js"></script>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+
           <script src="./js/jqueryzoom.js"></script>
           <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css" />
           <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
           <script src="./js/alertar.js"></script>
+          <script src="./js/shortcut.js"></script>
+
           <script src="./js/global.js"></script>
           <script src="./js/bcpaint.js"></script>
           <script src="./js/moment.js"></script>
           <script src="./js/jquery.mask.js"></script>
 
+          <script src="./js/JellyFish.js"></script>
+
           <script src="./js/jquery-confirm.js"></script>
 
 
-
+          <input type="hidden" id="cliente" disabled>
           <div class="modal" id="modal_zoom_imagem">
             <div class="close_modal_father">
               <i onclick="$('#modal_zoom_imagem').css('display','none');$('fundoIMG').css('display','none')"

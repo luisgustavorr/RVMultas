@@ -51,6 +51,7 @@
       <button type="button">{Nome do Cliente}</button>
       <button type="button">{Documento Cliente}</button>
       <button type="button">{Data Atual}</button>
+      <button type="button">{Assinatura}</button>
     </div>
     <div id="toolbar">
       <span class="ql-formats">
@@ -213,42 +214,7 @@
   </button>
 </div>
 <section id="cards_father_contrato">
-  <% function formatarData(target_data) { let data = new Date(target_data); let
-  dia = data.getDate(); let mes = data.getMonth() + 1; dia = dia < 10 ? '0' +
-  dia : dia; mes = mes < 10 ? '0' + mes : mes; let ano = data.getFullYear(); let
-  dataFormatada = dia + '/' + mes + '/' + ano; return dataFormatada }
-  attributes.data_contarato.forEach(element => { let dataFormatada =
-  formatarData(element.data_criacao) %>
 
-  <div class="card">
-    <div class="name_header_card">
-      <h4><%=element.nome %></h4>
-      <i id_contrato="<%=element.id %>" aberto="0" class="options_contrato fa-solid fa-bars"></i>
-    </div>
-    <div>
-      <red>Código:</red>
-      <span>#<%=element.id %></span>
-    </div>
-    <div>
-      <red>Data de Criação:</red>
-      <span><%=dataFormatada %></span>
-    </div>
-    <div>
-      <red>Clientes Vinculados:</red>
-      <span><%=element.numero_relacionamentos %> cliente(s)</span>
-    </div>
-    <div class="links_father">
-      <% 
-      if (parseInt(element.numero_relacionamentos) > 0){
-
-%> 
-<a id_contrato="<%=element.id %>"class='ver_emissao'>Ver Emissões</a>
-<%
-      }
-%>      <a id_contrato="<%=element.id %>" class="realizar_emissao">Realizar Emissão</a>
-    </div>
-  </div>
-  <%}); %>
 </section>
 
 <script type="module" src="./js/contratos.js"></script>

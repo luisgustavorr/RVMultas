@@ -12,7 +12,7 @@ class indexPage {
     var url_parts = url.parse(this.ctx.request.url, true);
     var query = url_parts.query;
 
-    let select_processos = await this.db.exec('SELECT `tb_processos`.*,tb_status.nome,tb_status.cor,tb_clientes.cnh,tb_clientes.nome as nome_cliente,tb_clientes.cpf FROM `tb_processos` INNER JOIN tb_status ON tb_status.id = tb_processos.status INNER JOIN tb_processos_relacionados ON tb_processos_relacionados.id_processo = tb_processos.id INNER JOIN tb_clientes on tb_processos_relacionados.id_cliente = tb_clientes.id GROUP BY tb_processos.id')
+    let select_processos = await this.db.exec('SELECT `tb_processos`.*,tb_status.nome,tb_status.mensagem,tb_status.cor,tb_clientes.cnh,tb_clientes.tel,tb_clientes.nome as nome_cliente,tb_clientes.cpf FROM `tb_processos` INNER JOIN tb_status ON tb_status.id = tb_processos.status INNER JOIN tb_processos_relacionados ON tb_processos_relacionados.id_processo = tb_processos.id INNER JOIN tb_clientes on tb_processos_relacionados.id_cliente = tb_clientes.id GROUP BY tb_processos.id')
     let status = await this.db.exec('SELECT * FROM tb_status')
     let metricas = await this.db.exec('SELECT COUNT(tb_processos.id) as quantidade,tb_status.nome  as status FROM tb_processos INNER JOIN tb_status ON tb_status.id = tb_processos.status WHERE MONTH(CURRENT_DATE) = MONTH(tb_processos.criacao)  GROUP BY tb_processos.status   ORDER BY COUNT(tb_processos.id) DESC LIMIT 2;')
     let processosMes = await this.db.exec('SELECT COUNT(tb_processos.id) as processosMes FROM tb_processos WHERE MONTH(CURRENT_DATE) = MONTH(tb_processos.criacao);')
@@ -30,7 +30,7 @@ class indexPage {
 
   }
   updateStatus() {
-    this.app.post("/MeusProcessos/updateStatus", async ctx => {
+    this.app.post(process.env.ROOT+"/MeusProcessos/updateStatus", async ctx => {
       let idProcesso = ctx.request.body.idProcesso
       let status = ctx.request.body.status
       let update = await this.db.exec(`UPDATE tb_processos SET status = ?,atualizacao = CURRENT_DATE() WHERE id = ?`, [status, idProcesso])
@@ -41,7 +41,7 @@ class indexPage {
     })
   }
   insertStatus() {
-    this.app.post("/MeusProcessos/insertStatus", async ctx => {
+    this.app.post(process.env.ROOT+"/MeusProcessos/insertStatus", async ctx => {
       let status = ctx.request.body.status
       let mensagem = ctx.request.body.mensagem
       let cor = ctx.request.body.cor
@@ -53,7 +53,7 @@ class indexPage {
     })
   }
   deleteStatus() {
-    this.app.post("/MeusProcessos/deleteStatus", async ctx => {
+    this.app.post(process.env.ROOT+"/MeusProcessos/deleteStatus", async ctx => {
       let id_status = ctx.request.body.id_status
       let update = await this.db.exec(`DELETE FROM tb_status WHERE id = ?`, [id_status])
       let novoObjeto = await this.attributes()
@@ -63,7 +63,7 @@ class indexPage {
     })
   }
   updateInfoStatus() {
-    this.app.post("/MeusProcessos/updateInfoStatus", async ctx => {
+    this.app.post(process.env.ROOT+"/MeusProcessos/updateInfoStatus", async ctx => {
       let status = ctx.request.body.status
       let id_status = ctx.request.body.id_status
       let mensagem = ctx.request.body.mensagem
@@ -76,7 +76,7 @@ class indexPage {
     })
   }
   selectClientes() {
-    this.app.post("/MeusProcessos/selectClientes", async ctx => {
+    this.app.post(process.env.ROOT+"/MeusProcessos/selectClientes", async ctx => {
       let select_clientes = await this.db.exec('SELECT tb_clientes.nome,tb_clientes.id,JSON_ARRAYAGG(tb_imagens_clientes.path) AS caminhos FROM tb_clientes LEFT JOIN tb_imagens_clientes ON tb_imagens_clientes.cliente_id = tb_clientes.id GROUP BY id;')
 
       ctx.response.body = { status: 200, message: "sucesso", clientes: select_clientes }
@@ -84,14 +84,14 @@ class indexPage {
     })
   }
   selectProcesso(){
-    this.app.post("/MeusProcessos/selectProcesso", async ctx => {
+    this.app.post(process.env.ROOT+"/MeusProcessos/selectProcesso", async ctx => {
       let idProcesso = ctx.request.body.idProcesso
       let select_processos = await this.db.exec('SELECT tb_processos.*,tb_processos_relacionados.id_cliente,JSON_ARRAYAGG(CONCAT(tb_imagens_processos.path,"|^|^|",tb_imagens_processos.row))AS arquivos_processos FROM tb_processos LEFT JOIN tb_processos_relacionados ON tb_processos_relacionados.id_processo = tb_processos.id LEFT JOIN tb_imagens_processos ON tb_imagens_processos.id_processo = tb_processos_relacionados.id_processo WHERE tb_processos.id= ?',[idProcesso])
       ctx.response.body = { status: 200, message: "sucesso", processo: select_processos[0] }
     })
   }
   selectCliente() {
-    this.app.post("/MeusProcessos/selectCliente", async ctx => {
+    this.app.post(process.env.ROOT+"/MeusProcessos/selectCliente", async ctx => {
       let id_cliente = ctx.request.body.id_cliente
 
       let select_cliente = await this.db.exec('SELECT cpf,tel FROM tb_clientes WHERE id = ?', [id_cliente])
@@ -101,7 +101,7 @@ class indexPage {
     })
   }
   updateProcesso(){
-    this.app.post("/MeusProcessos/updateProcesso", async ctx => {
+    this.app.post(process.env.ROOT+"/MeusProcessos/updateProcesso", async ctx => {
       let cliente_id = ctx.request.body.clientId
       let id_processo = ctx.request.body.id_processo
       let status = ctx.request.body.status
@@ -148,7 +148,7 @@ class indexPage {
     })
   }
   insertProcesso() {
-    this.app.post("/MeusProcessos/insertProcesso", async ctx => {
+    this.app.post(process.env.ROOT+"/MeusProcessos/insertProcesso", async ctx => {
       let cliente_id = ctx.request.body.clientId
       let status = ctx.request.body.status
       let nomeProcesso = ctx.request.body.nomeProcesso

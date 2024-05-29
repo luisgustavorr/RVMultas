@@ -16,7 +16,7 @@ class indexPage {
 
   }
   selectCliente() {
-    this.app.post("/LoginCliente/selectCliente", async ctx => {
+    this.app.post(process.env.ROOT+"/LoginCliente/selectCliente", async ctx => {
       let cpf = ctx.request.body.cpf
       let select_cliente = await this.db.exec('SELECT id FROM tb_clientes WHERE cpf = ?', [cpf])
       ctx.response.body = { status: 200, message: "sucesso", cliente: select_cliente[0] }

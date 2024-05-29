@@ -1,42 +1,10 @@
 let attr_obj = JSON.parse(attributes.value).processos
 let infoCliente = JSON.parse(attributes.value).cliente
 let allinfo = JSON.parse(attributes.value)
+var id_cliente_global =JSON.parse(attributes.value).id_cliente
+
 console.log(JSON.parse(attributes.value))
-var sketchpad = new Sketchpad({
-  element: '#sketchpad',
-  width:  $("#assinatura_father").width(),
-  height:  $("#assinatura_father").height() - 86,
-});
-function canvasToFile() {
-  var canvas = document.getElementById("sketchpad");
-  var dataURL = canvas.toDataURL("image/png");
 
-  function dataURLtoBlob(dataurl) {
-      var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-          bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-      while(n--){
-          u8arr[n] = bstr.charCodeAt(n);
-      }
-      return new Blob([u8arr], {type:mime});
-  }
-
-  var blob = dataURLtoBlob(dataURL);
-  var file = new File([blob], "canvas_image.png", {type: "image/png", lastModified: new Date()});
-  console.log(file);
-
-  var formData = new FormData();
-  formData.append("file", file);
-
-  const xhr = new XMLHttpRequest();
-  xhr.open("POST", "/ProcessosCliente/saveAssinatura", true);
-  xhr.onreadystatechange = function () {
-      if (xhr.readyState === XMLHttpRequest.DONE) {
-          console.log(xhr.status);
-          console.log(xhr.responseText);
-      }
-  }
-  xhr.send(formData);
-}
 function confirmarSolicitarProcesso(){
   let tamnhoModal = $(window).window >=500 ? "500px" : "90%";
   let numeroTelCliente = infoCliente.tel.replace(/[ ]|-|\(|\)+/g,"")
@@ -71,8 +39,44 @@ function confirmarSolicitarProcesso(){
     }
   })
 }
+
+$.post("/ProcessosCliente/selectContratosPendentes",{},(ret)=>{
+  let tamnhoModal = $(window).window >=500 ? "500px" : "90%";
+  console.log(ret.contratos)
+console.log(ret)
+if(ret.contratos !== undefined){
+  const code = ret.contratos.id_contrato.toString()
+  const secretKey = 'G4l01313'; // Use uma chave segura
+  // Criptografar o código
+
+let encrypted = CryptoJS.AES.encrypt(code, secretKey).toString().replace(/\+/g,"|||");
+console.log(encrypted)
+
+  $.confirm({
+  title: 'ALERTA !',
+  content: 'Contrato Pendente, clique em "Assinar Agora" para assina-lo.',
+  boxWidth: tamnhoModal,
+  useBootstrap: false,
+  buttons: {
+    Solicitar: {
+      text: 'Assinar Agora',
+      btnClass: 'btn-red',
+      
+      action: function() {
+        location.href = "/AssinarContrato?token="+encrypted+"&client_id="+ret.contratos.id_cliente
+      }
+    },
+    Cancelar: function() {
+
+    }
+  }
+})
+}
+
+})
 let  files_uploaded = []
 function loadClientImages(array) {
+  $(".info_cliente_father .imagens_father").html("")
   let jsonArray = JSON.parse(array)
   console.log(jsonArray)
   jsonArray.forEach(element => {
@@ -101,12 +105,17 @@ function loadClientImages(array) {
 }
 $("#cards_father").on("click", ".edit_info", function (ret) {
   files_uploaded = []
+  
   $(".edit_info").css("diplay", "block")
   $("#editando_processo").val(true)
+  $("main").scrollTop(0);
+  $("main").css("overflow-y", " hidden")
+
   $("#editando_processo").attr("id_processo", $(this).attr("id_processo"))
   $("#modal_add_processo").css("display", "flex")
   $.post("/ProcessosCliente/selectProcesso", { idProcesso: $(this).attr("id_processo") }, ret => {
     let infoProcesso = ret.processo
+    console.log(infoProcesso)
     $(".data_criacao").text(moment(infoProcesso.criacao).format('DD/MM/YYYY HH[h]mm[min]'))
     $(".ult_atualizacao").text(moment(infoProcesso.atualizacao).format('DD/MM/YYYY HH[h]mm[min]'))
     console.log(infoProcesso)
@@ -118,8 +127,8 @@ $("#cards_father").on("click", ".edit_info", function (ret) {
     $("#select_cliente").val(cliente.nome)
     $("#placa_processo").val(infoProcesso.placa_carro)
     loadClientImages(cliente.caminhos)
-    $("#status_processo_criado").val(infoProcesso.status)
-    $("#status_processo_criado").attr("style", $("#status_processo_criado").find("option[value='" + infoProcesso.status + "']").attr("style"))
+    $("#status_processo_criado").append(`<option style="color:${infoProcesso.cor};" value="${infoProcesso.status_nome}">${infoProcesso.status_nome}</option>`)
+    $("#status_processo_criado").attr("style", $("#status_processo_criado").find("option[value='" + infoProcesso.status_nome + "']").attr("style"))
       $(".whatsapp").text(cliente.tel)
       $(".cpf").text(cliente.cpf)
       $(".loading_clientes").css("display", "none")
@@ -183,7 +192,6 @@ function createCards(array, status = null) {
       let dataFormatada = dia + '/' + mes + '/' + ano;
       $("#cards_father").append(`
       <div class="card"><div class="name_header_card"><h4>${element.nome_processo} </h4>
-      <i class="fa-regular fa-trash-can"></i>
         </div><div>
         <red>Status:</red>
         <span>${element.nome}</span>
@@ -204,53 +212,3 @@ let processos_filtrados =buscar($(this), attr_obj, "nome_processo")
 createCards(processos_filtrados)
 })
 
-$("#modal_adicionar_cliente").submit(function (event) {
-  event.preventDefault()
-  var formData = new FormData();
-
-  // Adicione os dados à FormData
-  // Adicione o arquivo .zip
-  var files = files_uploaded;
-  formData.append("nome_cliente", $("#nome_cliente").val());
-  formData.append("cnh_cliente", $("#cnh_cliente").val());
-  formData.append("tel_cliente", $("#tel_cliente").val());
-  formData.append("email_cliente", $("#email_cliente").val());
-  formData.append("cpf_cliente", $("#cpf_cliente").val());
-  formData.append("vencimento_cliente", $("#vencimento_cliente").val());
-
-  files.forEach(e => {
-    console.log(e.files)
-    let file = e.files
-    let fileName = file.name.split(".")[0]
-    fileName = fileName.replace(/ /g, "_")
-    console.log(fileName)
-    formData.append(fileName, file);
-  })
-
-  const xhr = new XMLHttpRequest();
-  let path = "/MeusClientes/insertCliente"
-  if ($("#modal_adicionar_cliente").attr("id_cliente") != "0") {
-    path = "/MeusClientes/updateCliente"
-    formData.append("idCliente", parseInt($("#modal_adicionar_cliente").attr("id_cliente")));
-
-  }
-  xhr.open("POST", path, true);
-  xhr.onreadystatechange = function () {
-    if (xhr.readyState === XMLHttpRequest.DONE) {
-      if (xhr.status === 200) {
-        // Handle successful response from the server
-        console.log('Files uploaded successfully!');
-        let ret = JSON.parse(xhr.response)
-        ret = JSON.parse(ret.newObject)
-        attr_obj = ret.clientes
-        createCards(attr_obj)
-        fecharModal()
-      } else {
-        // Handle error response from the server
-        console.error('Failed to upload files.');
-        alert("Error occurred during file upload. Please try again.");
-      }
-    }
-  };
-  xhr.send(formData);
-})

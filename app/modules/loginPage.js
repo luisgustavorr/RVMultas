@@ -19,7 +19,7 @@ class indexPage {
 
   }
   selectCliente() {
-    this.app.post("/Login/selectCliente", async ctx => {
+    this.app.post(process.env.ROOT+"/Login/selectCliente", async ctx => {
       let user = ctx.request.body.user
       let senha = ctx.request.body.senha
       let select_cliente = await this.db.exec('SELECT id,privilegio FROM tb_usuarios WHERE nome = ? AND senha = ?', [user,senha])
@@ -29,7 +29,7 @@ class indexPage {
   }
   async updateUltimoAcesso(){
 
-    this.app.post("/Login/updateUltimoAcesso", async ctx => {
+    this.app.post(process.env.ROOT+"/Login/updateUltimoAcesso", async ctx => {
 
     let id_cliente = ctx.request.body.id_cliente
 
