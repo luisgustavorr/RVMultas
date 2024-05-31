@@ -17,6 +17,7 @@
     "axios": "^1.7.2",
     "crypto": "^1.0.1",
     "crypto-js": "^4.2.0",
+    "dotenv": "^16.4.5",
     "fs": "^0.0.1-security",
     "html-pdf": "^3.0.1",
     "html-pdf-node": "^1.0.8",

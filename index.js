@@ -10,11 +10,14 @@ const bodyParser = require('koa-body-parser');
 const pagesManager = require('./app/modules/pagesManager');
 const axios = require('axios');
 const { koaBody } = require('koa-body');
-console.log(process.env.ROOT)
 const app = websockify(new Koa());
 const router = new Router();
 const logsDir = "./logs";
 const logFilePath = path.join(logsDir, "logfile.txt");
+const dotenv = require('dotenv');
+dotenv.config()
+console.log(process.env.ROOT)
+
 fs.mkdirSync(logsDir, { recursive: true });
 
 // Cria o arquivo de log se não existir
