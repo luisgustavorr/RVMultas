@@ -13,7 +13,19 @@ const { koaBody } = require('koa-body');
 console.log(process.env.ROOT)
 const app = websockify(new Koa());
 const router = new Router();
+const logsDir = "./logs";
+const logFilePath = path.join(logsDir, "logfile.txt");
+fs.mkdirSync(logsDir, { recursive: true });
 
+// Cria o arquivo de log se não existir
+if (!fs.existsSync(logFilePath)) {
+    fs.writeFileSync(logFilePath, ''); // Cria o arquivo vazio
+}
+console.log = function (msg) {
+    logStream.write(new Date().toString() + " - " + msg + '\n');
+};
+// Cria o fluxo de escrita para o arquivo de log
+const logStream = fs.createWriteStream(logFilePath, { flags: 'a' });
 app.use(koaBody({ multipart: true }));
 
 
@@ -25,8 +37,6 @@ render(app, {
     debug: false
 });
 
-const staticDir = path.join(__dirname, "app", 'assets', "views");
-app.use(static(staticDir));
 
 let db = new mysqlConnection();
 let arrayPermissoes = {
@@ -147,6 +157,9 @@ router.get(/^[^.]*/, async ctx => {
         attributes: koalaFacts
     });
 });
+const staticDir = path.join(__dirname, "app", 'assets', "views");
+app.use(static(staticDir));
+
 app.use(bodyParser());
 app.use(router.routes()).use(router.allowedMethods());
 
